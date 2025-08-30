@@ -102,7 +102,7 @@ const UpdatePassword = () => {
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
             <BookOpen className="h-8 w-8 text-primary" />
-            <span className="ml-2 text-2xl font-bold">ITEP Physics Hub</span>
+            <span className="ml-2 text-2xl font-bold">ITEP HUB</span>
           </div>
           <CardTitle className="text-2xl text-center">Set New Password</CardTitle>
           <CardDescription className="text-center">

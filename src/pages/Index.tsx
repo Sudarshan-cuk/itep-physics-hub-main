@@ -73,7 +73,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <div className="text-center space-y-6">
             <h1 className="text-5xl md:text-7xl font-bold text-foreground leading-tight">
-              ITEP Physics Hub
+              ITEP HUB
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Integrated Teacher Education Program - Preparing Passionate Physics Educators 
@@ -182,7 +182,7 @@ const Index = () => {
             <div>
               <div className="flex items-center mb-4">
                 <BookOpen className="h-6 w-6 text-primary mr-2" />
-                <span className="font-bold text-lg">ITEP Physics Hub</span>
+                <span className="font-bold text-lg">ITEP HUB</span>
               </div>
               <p className="text-muted-foreground">
                 Empowering physics education at Central University of Kerala.
@@ -252,7 +252,7 @@ const Index = () => {
           </div>
           
           <div className="border-t border-border pt-8 mt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 ITEP Physics Hub, Central University of Kerala. All rights reserved.</p>
+            <p>&copy; 2024 ITEP HUB, Central University of Kerala. All rights reserved.</p>
           </div>
         </div>
       </footer>

@@ -345,10 +345,10 @@ export default function Contact() {
                 <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-foreground mb-2">Campus Location</h3>
                 <p className="text-muted-foreground mb-4">
-                  Located in Thiruvananthapuram, the capital city of Kerala
+                  Located in Tejaswini Hills, Kasaragod, Kerala, part of the Central University of Kerala.
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Interactive campus map and directions available on Kerala University's official website
+                  Interactive campus map and directions available on the Central University of Kerala's official website.
                 </p>
               </div>
             </CardContent>

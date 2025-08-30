@@ -14,7 +14,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-lg font-semibold text-primary mb-4">ITEP</h3>
+            <h3 className="text-lg font-semibold text-primary mb-4">ITEP HUB</h3>
             <p className="text-muted-foreground text-sm">
               Your go-to resource for physics study materials, research, and community.
             </p>
@@ -50,7 +50,7 @@ export function Footer() {
           </div>
         </div>
         <div className="border-t border-border mt-8 pt-6 text-center text-muted-foreground text-sm">
-          &copy; {new Date().getFullYear()} ITEP. All rights reserved.
+          &copy; {new Date().getFullYear()} ITEP HUB. All rights reserved.
         </div>
       </div>
     </footer>

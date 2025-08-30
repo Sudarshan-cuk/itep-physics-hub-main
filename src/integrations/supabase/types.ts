@@ -386,6 +386,7 @@ export type Database = {
           url: string;
           icon_name: string | null;
           display_order: number | null;
+          user_id: string; // Added user_id to social_accounts table
         };
         Insert: {
           id?: string;
@@ -395,6 +396,7 @@ export type Database = {
           url: string;
           icon_name?: string | null;
           display_order?: number | null;
+          user_id: string; // Added user_id to social_accounts table
         };
         Update: {
           id?: string;
@@ -404,8 +406,17 @@ export type Database = {
           url?: string;
           icon_name?: string | null;
           display_order?: number | null;
+          user_id?: string; // Added user_id to social_accounts table
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "social_accounts_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["user_id"];
+          },
+        ];
       };
     };
     Views: {

@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -22,6 +23,7 @@ import { Galleries as AdminGalleries } from "./pages/admin/Galleries";
 import { ResearchPapers } from "./pages/ResearchPapers";
 import { LabReports } from "./pages/LabReports";
 import { Assignments } from "./pages/Assignments";
+import MyAccount from "./pages/MyAccount"; // Import the new MyAccount page
 
 const queryClient = new QueryClient();
 
@@ -31,6 +33,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <SpeedInsights />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
@@ -46,6 +49,7 @@ const App = () => (
             <Route path="/research-papers" element={<ResearchPapers />} />
             <Route path="/lab-reports" element={<LabReports />} />
             <Route path="/assignments" element={<Assignments />} />
+            <Route path="/my-account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} /> {/* New MyAccount route */}
             <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
             <Route path="/admin/galleries" element={<ProtectedRoute><AdminGalleries /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

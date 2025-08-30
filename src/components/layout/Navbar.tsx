@@ -39,6 +39,11 @@ export function Navbar() {
     { name: 'Assignments', path: '/assignments', public: false },
   ];
 
+  // Add "My Account" for logged-in users
+  if (user) {
+    navItems.push({ name: 'My Account', path: '/my-account', public: false });
+  }
+
   // Add admin dashboard for admin users
   if (profile?.role === 'admin') {
     navItems.splice(3, 0,

@@ -277,7 +277,7 @@ export default function Contact() {
                   <Badge variant="outline">Research</Badge>
                   <Badge variant="outline">Faculty</Badge>
                   <Badge variant="outline">Student Services</Badge>
-                  <Badge variant="outline">B.Ed Program</Badge>
+                  <Badge variant="outline">ITEP Programs</Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mt-4">
                   For specific inquiries about teacher training admissions, research opportunities, 

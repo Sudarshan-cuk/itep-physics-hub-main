@@ -209,7 +209,7 @@ export default function About() {
             </div>
 
             <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg p-8">
-              <h3 className="text-2xl font-bold text-foreground mb-6">Why Choose ITEP Physics?</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-6">Why Choose ITEP?</h3>
               <ul className="space-y-3 text-muted-foreground">
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>

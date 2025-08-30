@@ -240,7 +240,7 @@ export default function Gallery() {
             <h1 className="text-4xl font-bold text-foreground">Photo Gallery</h1>
           </div>
           <p className="text-muted-foreground text-lg">
-            Memories and moments from the ITEP Physics Department
+            Memories and moments from the ITEP courses at Central University of Kerala
           </p>
         </div>
 
@@ -369,7 +369,7 @@ export default function Gallery() {
               Explore the visual journey of our physics department through the years. From laboratory 
               sessions and research presentations to graduation ceremonies and campus events, these 
               photos capture the vibrant academic life and achievements of our students and faculty. 
-              Each image tells a story of discovery, learning, and community within the ITEP Physics Department.
+              Each image tells a story of discovery, learning, and community within the ITEP courses.
             </p>
           </div>
         )}

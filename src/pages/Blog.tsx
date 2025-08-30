@@ -75,9 +75,9 @@ export default function Blog() {
   const sampleBlogPosts: BlogPost[] = [
     {
       id: 'sample-1',
-      title: 'Career Opportunities After ITEP Physics: Beyond the Classroom',
-      excerpt: 'Discover the diverse career paths available to ITEP Physics graduates, from teaching to research, educational technology, and policy-making in science education.',
-      content: `The Integrated Teacher Education Program (ITEP) in Physics opens doors to numerous exciting career opportunities that extend far beyond traditional classroom teaching. Our graduates are uniquely positioned with both deep physics knowledge and pedagogical expertise, making them valuable in various professional domains.
+      title: 'Career Opportunities After ITEP: Beyond the Classroom',
+      excerpt: 'Discover the diverse career paths available to ITEP graduates, from teaching to research, educational technology, and policy-making in education.',
+      content: `The Integrated Teacher Education Program (ITEP) opens doors to numerous exciting career opportunities that extend far beyond traditional classroom teaching. Our graduates are uniquely positioned with with strong subject knowledge and pedagogical expertise, making them valuable in various professional domains.
 
 **Teaching Careers:**
 - Secondary and Higher Secondary Physics Teacher
@@ -145,7 +145,7 @@ As a physics teacher, you have the unique opportunity to:
 **The ITEP Advantage:**
 Our program uniquely combines rigorous physics education with proven teaching methodologies, ensuring you not only understand physics deeply but can also make it accessible and engaging for students of all backgrounds.
 
-In an age of rapid technological advancement, physics literacy is becoming increasingly important for informed citizenship. As an ITEP Physics graduate, you become a crucial bridge between complex scientific concepts and public understanding.`,
+In an age of rapid technological advancement, subject literacy is becoming increasingly important for informed citizenship. As an ITEP graduate, you become a crucial bridge between complex scientific concepts and public understanding.`,
       author_id: 'admin',
       published: true,
       published_at: '2024-02-01T00:00:00Z',
@@ -345,7 +345,7 @@ The future of physics education lies in the hands of well-prepared teachers who 
             <h1 className="text-4xl font-bold text-foreground">Physics Hub Blog</h1>
           </div>
           <p className="text-muted-foreground text-lg">
-            Latest insights, research updates, and guidance from the ITEP Physics Department
+            Latest insights, research updates, and guidance from the ITEP courses at Central University of Kerala
           </p>
         </div>
 

@@ -71,7 +71,7 @@ const Auth = () => {
             {isLogin ? 'Welcome Back' : 'Create Account'}
           </CardTitle>
           <CardDescription className="text-center">
-            {isLogin ? 'Sign in to access your physics resources' : 'Join the ITEP Physics community'}
+            {isLogin ? 'Sign in to access your ITEP resources' : 'Join the ITEP community'}
           </CardDescription>
         </CardHeader>
 

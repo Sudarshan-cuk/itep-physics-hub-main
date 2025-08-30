@@ -8,18 +8,22 @@ import { supabase } from '@/integrations/supabase/client';
 import { GalleryForm } from '@/components/admin/galleries/GalleryForm';
 import { PhotoManagement } from '@/components/admin/galleries/PhotoManagement';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tables } from '@/integrations/supabase/types'; // Import Tables type
+
+// Define Gallery type based on Supabase schema
+type Gallery = Tables<'galleries'>;
 
 export const Galleries = () => {
-  const [galleries, setGalleries] = useState([]);
+  const [galleries, setGalleries] = useState<Gallery[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedGallery, setSelectedGallery] = useState(null);
+  const [selectedGallery, setSelectedGallery] = useState<Gallery | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('galleries');
   const { toast } = useToast();
 
   const fetchGalleries = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('galleries').select('*');
+    const { data, error } = await supabase.from('galleries').select('*').order('created_at', { ascending: false });
     if (error) {
       toast({
         title: 'Error',
@@ -27,7 +31,7 @@ export const Galleries = () => {
         variant: 'destructive',
       });
     } else {
-      setGalleries(data);
+      setGalleries(data || []); // Ensure data is an array
     }
     setLoading(false);
   };
@@ -36,7 +40,7 @@ export const Galleries = () => {
     fetchGalleries();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => { // Add type for id
     if (window.confirm('Are you sure you want to delete this gallery? This will also delete all associated photos.')) {
       const { error } = await supabase.from('galleries').delete().eq('id', id);
       if (error) {
@@ -55,7 +59,7 @@ export const Galleries = () => {
     }
   };
 
-  const handleEdit = (gallery) => {
+  const handleEdit = (gallery: Gallery) => { // Add type for gallery
     setSelectedGallery(gallery);
     setIsFormOpen(true);
   };
@@ -101,7 +105,7 @@ export const Galleries = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Name</TableHead>
+                      <TableHead>Title</TableHead> {/* Changed Name to Title */}
                       <TableHead>Description</TableHead>
                       <TableHead>Created At</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -110,7 +114,7 @@ export const Galleries = () => {
                   <TableBody>
                     {galleries.map((gallery) => (
                       <TableRow key={gallery.id} onClick={() => setSelectedGallery(gallery)} className={selectedGallery?.id === gallery.id ? 'bg-muted' : ''}>
-                        <TableCell className="font-medium">{gallery.name}</TableCell>
+                        <TableCell className="font-medium">{gallery.title}</TableCell> {/* Changed gallery.name to gallery.title */}
                         <TableCell>{gallery.description}</TableCell>
                         <TableCell>{new Date(gallery.created_at).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right">

@@ -7,19 +7,28 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Camera, Search, Calendar, User, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Tables } from '@/integrations/supabase/types'; // Import Tables type
 
-interface Photo {
-  id: string;
-  title: string;
-  description: string;
-  image_url: string;
-  category: string;
-  batch_year: number;
-  uploaded_by: string;
-  created_at: string;
+// Define a base Photo type from the Supabase schema
+type BasePhoto = Tables<'photos'>;
+type GalleryTable = Tables<'galleries'>;
+
+// Extend the base Photo type with enriched data
+interface Photo extends BasePhoto {
+  // Fields from galleries table (via join)
+  gallery_title?: string; // Assuming title comes from the linked gallery
+  gallery_description?: string; // Assuming description comes from the linked gallery
+  // Fields from profiles table (via join)
   profiles?: {
     full_name: string;
   };
+  // Other fields used for filtering/display, but not directly from DB tables
+  // These fields are not in the 'photos' or 'galleries' table directly,
+  // so they need to be derived or added to the schema if they are truly photo-specific.
+  // For now, making them optional and will need to be handled in the fetching logic.
+  category?: string;
+  batch_year?: number;
+  uploaded_by?: string; // This is the user_id, if photos had an uploader_id column
 }
 
 export default function Gallery() {
@@ -29,7 +38,6 @@ export default function Gallery() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedBatch, setSelectedBatch] = useState('All');
-  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
 
   const categories = ['All', 'General', 'Laboratory', 'Seminars', 'Events', 'Graduation', 'Campus Life'];
   const batchYears = ['All', '2020', '2021', '2022', '2023', '2024', '2025'];
@@ -40,34 +48,53 @@ export default function Gallery() {
 
   const fetchPhotos = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch photos and join with galleries to get title and description
+      const { data: photosData, error: photosError } = await supabase
         .from('photos')
-        .select('*')
+        .select(`
+          *,
+          galleries (
+            title,
+            description
+          )
+        `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      
-      // Fetch uploader profiles separately
-      const enrichedPhotos = await Promise.all(
-        (data || []).map(async (photo) => {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('full_name')
-            .eq('user_id', photo.uploaded_by)
-            .single();
-          
+      if (photosError) throw photosError;
+
+      // Since 'photos' table does not have 'uploaded_by' column,
+      // the current logic for fetching profiles based on photo.uploaded_by is flawed.
+      // For now, we will assume 'uploaded_by' is not directly available from the photo itself
+      // and will use a placeholder or derive it if possible from the gallery or a new column.
+      // If photos are meant to be uploaded by users, the 'photos' table needs an 'uploader_id' column.
+
+      const enrichedPhotos: Photo[] = (photosData || []).map((photo: any) => { // Use 'any' temporarily for the raw photo data
+          let profileFullName = 'ITEP Team';
+          // If the photos table had an 'uploaded_by' column, we would fetch the profile here.
+          // For now, we'll use a placeholder or assume the gallery has an uploader.
+          // Since the schema doesn't have it, we'll skip fetching profile based on photo.uploaded_by
+          // and just use the default 'ITEP Team' or derive it from the gallery if available.
+
+          // Assuming 'title' and 'description' come from the joined 'galleries' table
+          const gallery = photo.galleries as GalleryTable | null;
+
           return {
             ...photo,
-            profiles: profile || { full_name: 'ITEP Team' }
+            gallery_title: gallery?.title || undefined,
+            gallery_description: gallery?.description || undefined,
+            profiles: { full_name: profileFullName },
+            // Provide default undefined for fields not directly from DB or derived yet
+            category: undefined, // Not available from DB directly
+            batch_year: undefined, // Not available from DB directly
+            uploaded_by: undefined, // Not available from DB directly
           };
-        })
-      );
-      
+        }) as Photo[]; // Explicitly cast to Photo[]
+
       setPhotos(enrichedPhotos);
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: 'Failed to fetch photos',
+        description: `Failed to fetch photos: ${error.message}`,
         variant: 'destructive'
       });
     } finally {
@@ -76,8 +103,12 @@ export default function Gallery() {
   };
 
   const filteredPhotos = photos.filter(photo => {
-    const matchesSearch = photo.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         photo.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    // Use gallery_title and gallery_description for filtering if available, otherwise fallback to photo.caption
+    const photoTitle = photo.gallery_title || photo.caption || '';
+    const photoDescription = photo.gallery_description || photo.caption || '';
+
+    const matchesSearch = photoTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         photoDescription.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'All' || photo.category === selectedCategory;
     const matchesBatch = selectedBatch === 'All' || photo.batch_year?.toString() === selectedBatch;
     
@@ -93,131 +124,111 @@ export default function Gallery() {
   };
 
   // Sample photos for demonstration
-  const samplePhotos = [
+  const samplePhotos: Photo[] = [ // Ensure samplePhotos also conform to the Photo interface
     {
       id: '1',
-      title: 'Physics Laboratory Session',
-      description: 'Students conducting experiments in the modern physics lab',
+      gallery_id: 'gallery-1',
       image_url: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&h=600&fit=crop',
+      caption: 'Physics Laboratory Session',
+      order_index: 1,
+      created_at: '2024-01-15T00:00:00Z',
+      updated_at: '2024-01-15T00:00:00Z',
+      gallery_title: 'Physics Lab',
+      gallery_description: 'Students conducting experiments in the modern physics lab',
       category: 'Laboratory',
       batch_year: 2024,
       uploaded_by: 'admin',
-      created_at: '2024-01-15T00:00:00Z',
       profiles: { full_name: 'Dr. Physics' }
     },
     {
       id: '2',
-      title: 'Quantum Physics Seminar',
-      description: 'Guest lecture on quantum mechanics by renowned physicist',
+      gallery_id: 'gallery-2',
       image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop',
+      caption: 'Quantum Physics Seminar',
+      order_index: 2,
+      created_at: '2024-02-10T00:00:00Z',
+      updated_at: '2024-02-10T00:00:00Z',
+      gallery_title: 'Quantum Seminar',
+      gallery_description: 'Guest lecture on quantum mechanics by renowned physicist',
       category: 'Seminars',
       batch_year: 2024,
       uploaded_by: 'admin',
-      created_at: '2024-02-10T00:00:00Z',
       profiles: { full_name: 'Dr. Physics' }
     },
     {
       id: '3',
-      title: 'Graduation Ceremony 2023',
-      description: 'Physics department graduates celebrating their achievement',
+      gallery_id: 'gallery-3',
       image_url: 'https://images.unsplash.com/photo-1523050854058-8df90110c9d1?w=800&h=600&fit=crop',
+      caption: 'Graduation Ceremony 2023',
+      order_index: 3,
+      created_at: '2023-12-15T00:00:00Z',
+      updated_at: '2023-12-15T00:00:00Z',
+      gallery_title: 'Graduation 2023',
+      gallery_description: 'Physics department graduates celebrating their achievement',
       category: 'Graduation',
       batch_year: 2023,
       uploaded_by: 'admin',
-      created_at: '2023-12-15T00:00:00Z',
       profiles: { full_name: 'Dr. Physics' }
     },
     {
       id: '4',
-      title: 'Campus Physics Building',
-      description: 'The beautiful ITEP physics department building',
+      gallery_id: 'gallery-4',
       image_url: 'https://images.unsplash.com/photo-1562774053-701939374585?w=800&h=600&fit=crop',
+      caption: 'Campus Physics Building',
+      order_index: 4,
+      created_at: '2024-03-01T00:00:00Z',
+      updated_at: '2024-03-01T00:00:00Z',
+      gallery_title: 'Campus Life',
+      gallery_description: 'The beautiful ITEP physics department building',
       category: 'Campus Life',
       batch_year: 2024,
       uploaded_by: 'admin',
-      created_at: '2024-03-01T00:00:00Z',
       profiles: { full_name: 'Dr. Physics' }
     },
     {
       id: '5',
-      title: 'Student Research Presentation',
-      description: 'Undergraduate students presenting their research projects',
+      gallery_id: 'gallery-5',
       image_url: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop',
+      caption: 'Student Research Presentation',
+      order_index: 5,
+      created_at: '2024-01-20T00:00:00Z',
+      updated_at: '2024-01-20T00:00:00Z',
+      gallery_title: 'Research Presentation',
+      gallery_description: 'Undergraduate students presenting their research projects',
       category: 'Events',
       batch_year: 2024,
       uploaded_by: 'admin',
-      created_at: '2024-01-20T00:00:00Z',
       profiles: { full_name: 'Dr. Physics' }
     },
     {
       id: '6',
-      title: 'Telescope Observation Night',
-      description: 'Astronomy club organizing stargazing session for students',
+      gallery_id: 'gallery-6',
       image_url: 'https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&h=600&fit=crop',
+      caption: 'Telescope Observation Night',
+      order_index: 6,
+      created_at: '2024-02-25T00:00:00Z',
+      updated_at: '2024-02-25T00:00:00Z',
+      gallery_title: 'Astronomy Night',
+      gallery_description: 'Astronomy club organizing stargazing session for students',
       category: 'Events',
       batch_year: 2024,
       uploaded_by: 'admin',
-      created_at: '2024-02-25T00:00:00Z',
       profiles: { full_name: 'Dr. Physics' }
     }
   ];
 
   const displayPhotos = photos.length > 0 ? filteredPhotos : samplePhotos.filter(photo => {
-    const matchesSearch = photo.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         photo.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const photoTitle = photo.gallery_title || photo.caption || '';
+    const photoDescription = photo.gallery_description || photo.caption || '';
+
+    const matchesSearch = photoTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         photoDescription.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'All' || photo.category === selectedCategory;
     const matchesBatch = selectedBatch === 'All' || photo.batch_year?.toString() === selectedBatch;
     
     return matchesSearch && matchesCategory && matchesBatch;
   });
 
-  if (selectedPhoto) {
-    return (
-      <Layout>
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <Button 
-            variant="outline" 
-            onClick={() => setSelectedPhoto(null)}
-            className="mb-6"
-          >
-            ← Back to Gallery
-          </Button>
-          
-          <div className="bg-card rounded-lg overflow-hidden shadow-lg">
-            <img 
-              src={selectedPhoto.image_url} 
-              alt={selectedPhoto.title}
-              className="w-full h-96 object-cover"
-            />
-            <div className="p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Badge variant="secondary">{selectedPhoto.category}</Badge>
-                {selectedPhoto.batch_year && (
-                  <Badge variant="outline">Batch {selectedPhoto.batch_year}</Badge>
-                )}
-              </div>
-              <h1 className="text-3xl font-bold text-foreground mb-4">
-                {selectedPhoto.title}
-              </h1>
-              <p className="text-muted-foreground mb-6">
-                {selectedPhoto.description}
-              </p>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  <span>{selectedPhoto.profiles?.full_name || 'ITEP Team'}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  <span>{formatDate(selectedPhoto.created_at)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
 
   return (
     <Layout>
@@ -293,30 +304,33 @@ export default function Gallery() {
             {displayPhotos.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {displayPhotos.map((photo) => (
-                  <Card 
-                    key={photo.id} 
-                    className="overflow-hidden hover:shadow-lg transition-all cursor-pointer group"
-                    onClick={() => setSelectedPhoto(photo)}
+                  <a
+                    key={photo.id}
+                    href={photo.image_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="overflow-hidden hover:shadow-lg transition-all cursor-pointer group block"
                   >
-                    <div className="aspect-video overflow-hidden">
-                      <img 
-                        src={photo.image_url} 
-                        alt={photo.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
+                    <Card>
+                      <div className="aspect-video overflow-hidden">
+                        <img
+                          src={photo.image_url}
+                          alt={photo.gallery_title || photo.caption || 'Gallery Image'} // Use gallery_title or caption
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
                     <CardContent className="p-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="secondary">{photo.category}</Badge>
+                        {photo.category && <Badge variant="secondary">{photo.category}</Badge>}
                         {photo.batch_year && (
                           <Badge variant="outline">Batch {photo.batch_year}</Badge>
                         )}
                       </div>
                       <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
-                        {photo.title}
+                        {photo.gallery_title || photo.caption} {/* Use gallery_title or caption */}
                       </h3>
                       <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                        {photo.description}
+                        {photo.gallery_description || photo.caption} {/* Use gallery_description or caption */}
                       </p>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <User className="h-3 w-3" />
@@ -326,6 +340,7 @@ export default function Gallery() {
                       </div>
                     </CardContent>
                   </Card>
+                </a>
                 ))}
               </div>
             ) : (

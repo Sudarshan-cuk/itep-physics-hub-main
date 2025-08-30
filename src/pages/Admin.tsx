@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ContactManagement } from '@/components/admin/ContactManagement';
 import { StudyMaterialUpload } from '@/components/admin/StudyMaterialUpload';
+import { UserApprovalManagement } from '@/components/admin/UserApprovalManagement';
 import {
   Users,
   MessageSquare,
@@ -24,16 +25,6 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-interface User {
-  id: string;
-  full_name: string;
-  email: string;
-  role: string;
-  is_approved: boolean;
-  created_at: string;
-  batch_year?: number;
-}
-
 interface ContactMessage {
   id: string;
   name: string;
@@ -46,7 +37,6 @@ interface ContactMessage {
 
 function AdminContent() {
   const { toast } = useToast();
-  const [users, setUsers] = useState<User[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -62,11 +52,10 @@ function AdminContent() {
 
   const fetchData = async () => {
     try {
-      // Fetch users
+      // Fetch users for stats
       const { data: usersData, error: usersError } = await supabase
         .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('is_approved, role');
 
       if (usersError) throw usersError;
 
@@ -78,7 +67,6 @@ function AdminContent() {
 
       if (messagesError) throw messagesError;
 
-      setUsers(usersData || []);
       setMessages(messagesData || []);
 
       // Calculate stats
@@ -96,44 +84,6 @@ function AdminContent() {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const approveUser = async (userId: string) => {
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ is_approved: true })
-        .eq('user_id', userId);
-
-      if (error) throw error;
-      toast({ title: 'Success', description: 'User approved successfully' });
-      fetchData();
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: 'Failed to approve user',
-        variant: 'destructive'
-      });
-    }
-  };
-
-  const rejectUser = async (userId: string) => {
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('user_id', userId);
-
-      if (error) throw error;
-      toast({ title: 'Success', description: 'User rejected and removed' });
-      fetchData();
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: 'Failed to reject user',
-        variant: 'destructive'
-      });
     }
   };
 
@@ -292,54 +242,7 @@ function AdminContent() {
           </TabsList>
 
           <TabsContent value="users">
-            <Card>
-              <CardHeader>
-                <CardTitle>User Management</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {users.map((user) => (
-                    <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-medium text-foreground">{user.full_name}</h3>
-                          <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
-                            {user.role}
-                          </Badge>
-                          <Badge variant={user.is_approved ? 'default' : 'destructive'}>
-                            {user.is_approved ? 'Approved' : 'Pending'}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{user.email}</p>
-                        <p className="text-xs text-muted-foreground">
-                          Joined {formatDate(user.created_at)}
-                          {user.batch_year && ` • Batch ${user.batch_year}`}
-                        </p>
-                      </div>
-                      {!user.is_approved && user.role !== 'admin' && (
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            onClick={() => approveUser(user.id)}
-                          >
-                            <CheckCircle className="h-4 w-4 mr-1" />
-                            Approve
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => rejectUser(user.id)}
-                          >
-                            <XCircle className="h-4 w-4 mr-1" />
-                            Reject
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <UserApprovalManagement />
           </TabsContent>
 
           <TabsContent value="messages">

@@ -3,11 +3,16 @@ import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Tables } from '@/integrations/supabase/types'; // Import Tables type
+
+// Define types for Gallery and Photo based on Supabase schema
+type Gallery = Tables<'galleries'>;
+type Photo = Tables<'photos'>;
 
 export const GalleryDetail = () => {
   const { id } = useParams();
-  const [gallery, setGallery] = useState(null);
-  const [photos, setPhotos] = useState([]);
+  const [gallery, setGallery] = useState<Gallery | null>(null);
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -44,7 +49,7 @@ export const GalleryDetail = () => {
           variant: 'destructive',
         });
       } else {
-        setPhotos(photosData);
+        setPhotos(photosData || []); // Ensure photosData is an array
       }
       setLoading(false);
     };
@@ -62,7 +67,7 @@ export const GalleryDetail = () => {
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-4">{gallery.name}</h1>
+      <h1 className="text-3xl font-bold mb-4">{gallery.title}</h1> {/* Changed gallery.name to gallery.title */}
       <p className="text-lg text-gray-700 mb-6">{gallery.description}</p>
 
       <Card>
@@ -75,10 +80,16 @@ export const GalleryDetail = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {photos.map((photo) => (
-                <div key={photo.id} className="relative group">
-                  <img src={photo.image_url} alt={photo.description || 'Gallery photo'} className="w-full h-48 object-cover rounded-md" />
-                  {photo.description && <p className="mt-2 text-sm text-gray-600">{photo.description}</p>}
-                </div>
+                <a
+                  key={photo.id}
+                  href={photo.image_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative group block"
+                >
+                  <img src={photo.image_url} alt={photo.caption || 'Gallery photo'} className="w-full h-48 object-cover rounded-md" /> {/* Changed photo.description to photo.caption */}
+                  {photo.caption && <p className="mt-2 text-sm text-gray-600">{photo.caption}</p>} {/* Changed photo.description to photo.caption */}
+                </a>
               ))}
             </div>
           )}

@@ -23,6 +23,7 @@ import { ResearchPapers } from "./pages/ResearchPapers";
 import { LabReports } from "./pages/LabReports";
 import { Assignments } from "./pages/Assignments";
 import MyAccount from "./pages/MyAccount"; // Import the new MyAccount page
+import { FollowUs } from "./pages/FollowUs"; // Import the FollowUs page
 import { Layout } from "./components/layout/Layout"; // Import the Layout component
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const App = () => (
               <Route path="/research-papers" element={<ResearchPapers />} />
               <Route path="/lab-reports" element={<LabReports />} />
               <Route path="/assignments" element={<Assignments />} />
+              <Route path="/follow-us" element={<FollowUs />} />
               <Route path="/my-account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} /> {/* New MyAccount route */}
               <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
               <Route path="/admin/galleries" element={<ProtectedRoute><AdminGalleries /></ProtectedRoute>} />

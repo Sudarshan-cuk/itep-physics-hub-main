@@ -3,8 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
 
 export const GalleryPage = () => {
+  const { user, loading: authLoading } = useAuth();
   const [galleries, setGalleries] = useState([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -25,14 +28,41 @@ export const GalleryPage = () => {
   };
 
   useEffect(() => {
-    fetchGalleries();
-  }, []);
+    if (!authLoading && user) {
+      fetchGalleries();
+    } else if (!authLoading && !user) {
+      setLoading(false); // Stop loading if no user and auth is done
+    }
+  }, [user, authLoading]);
+
+  if (authLoading || loading) {
+    return (
+      <div className="container mx-auto py-10 text-center">
+        <h1 className="text-3xl font-bold mb-6">Our Galleries</h1>
+        <div>Loading galleries...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="container mx-auto py-10 text-center">
+        <h1 className="text-3xl font-bold mb-6">Our Galleries</h1>
+        <p className="text-lg text-muted-foreground mb-6">
+          Please log in to view the galleries.
+        </p>
+        <Link to="/auth">
+          <Button>Login</Button>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-10">
       <h1 className="text-3xl font-bold mb-6">Our Galleries</h1>
-      {loading ? (
-        <div>Loading galleries...</div>
+      {galleries.length === 0 ? (
+        <p className="text-muted-foreground">No galleries available yet.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {galleries.map((gallery) => (

@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Navbar } from '@/components/Navbar';
 import { useAuth } from '@/hooks/use-auth';
 import { BookOpen, Users, FileText, Image, Mail, ArrowRight, GraduationCap, Microscope, Award, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -65,7 +64,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
       
       {/* Hero Section */}
       <section className="relative physics-pattern py-24 px-4 overflow-hidden">

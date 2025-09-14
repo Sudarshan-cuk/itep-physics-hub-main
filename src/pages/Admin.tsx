@@ -20,7 +20,8 @@ import {
   Eye,
   Trash2,
   Building,
-  UploadCloud
+  UploadCloud,
+  Newspaper
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -136,11 +137,11 @@ function AdminContent() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading admin dashboard...</p>
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Loading admin dashboard...</p>
+          </div>
         </div>
-      </div>
     );
   }
 
@@ -210,7 +211,7 @@ function AdminContent() {
 
         {/* Main Content */}
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Users
@@ -226,6 +227,10 @@ function AdminContent() {
             <TabsTrigger value="content" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
               Content
+            </TabsTrigger>
+            <TabsTrigger value="blogs" className="flex items-center gap-2">
+              <Newspaper className="h-4 w-4" />
+              Blogs
             </TabsTrigger>
             <TabsTrigger value="gallery" className="flex items-center gap-2">
               <Image className="h-4 w-4" />
@@ -324,6 +329,28 @@ function AdminContent() {
                   <p className="text-muted-foreground">
                     Create and manage blog posts, announcements, and other content
                   </p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="blogs">
+            <Card>
+              <CardHeader>
+                <CardTitle>Blog Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-12">
+                  <Newspaper className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-xl font-medium text-muted-foreground mb-2">
+                    Blog Management
+                  </p>
+                  <p className="text-muted-foreground mb-6">
+                    Create, edit, and manage blog posts and announcements
+                  </p>
+                  <Button asChild>
+                    <a href="/admin/blogs">Manage Blogs</a>
+                  </Button>
                 </div>
               </CardContent>
             </Card>

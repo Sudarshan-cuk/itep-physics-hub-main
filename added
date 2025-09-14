@@ -1,0 +1,5 @@
+[33m69d21f3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix Contact.tsx build error - clean up syntax issues
+[33m34be02d[m Complete layout fixes - remove all duplicate Layout components
+[33m0505575[m Fix duplicate navbar issue and improve responsive design
+[33m6afc6fa[m Fix Follow Us page routing - add missing route and import
+[33md93d2b0[m Fix: Restore Index page content and remove duplicate Navbar rendering

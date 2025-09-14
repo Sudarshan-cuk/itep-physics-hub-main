@@ -24,6 +24,8 @@ import { LabReports } from "./pages/LabReports";
 import { Assignments } from "./pages/Assignments";
 import MyAccount from "./pages/MyAccount"; // Import the new MyAccount page
 import { FollowUs } from "./pages/FollowUs"; // Import the FollowUs page
+import WriteBlog from "./pages/WriteBlog"; // Import the WriteBlog page
+import { BlogManagement } from "./pages/admin/BlogManagement"; // Import the BlogManagement page
 import { Layout } from "./components/layout/Layout"; // Import the Layout component
 
 const queryClient = new QueryClient();
@@ -51,9 +53,11 @@ const App = () => (
               <Route path="/lab-reports" element={<LabReports />} />
               <Route path="/assignments" element={<Assignments />} />
               <Route path="/follow-us" element={<FollowUs />} />
+              <Route path="/write-blog" element={<ProtectedRoute><WriteBlog /></ProtectedRoute>} />
               <Route path="/my-account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} /> {/* New MyAccount route */}
               <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
               <Route path="/admin/galleries" element={<ProtectedRoute><AdminGalleries /></ProtectedRoute>} />
+              <Route path="/admin/blogs" element={<ProtectedRoute><BlogManagement /></ProtectedRoute>} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -68,17 +68,28 @@ export function BlogManagement() {
     try {
       const { data, error } = await supabase
         .from('blog_posts')
-        .select(`
-          *,
-          profiles:author_id (
-            full_name,
-            role
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setPosts(data || []);
+
+      // Fetch author profiles separately
+      const enrichedPosts = await Promise.all(
+        (data || []).map(async (post) => {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name, role')
+            .eq('user_id', post.author_id)
+            .single();
+
+          return {
+            ...post,
+            profiles: profile
+          };
+        })
+      );
+
+      setPosts(enrichedPosts);
     } catch (error) {
       console.error('Error fetching blog posts:', error);
       toast({

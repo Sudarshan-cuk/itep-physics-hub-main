@@ -53,17 +53,13 @@ export default function MyAccount() {
 
   if (loading) {
     return (
-      <Layout>
-        <div className="container mx-auto py-10 text-center">Loading profile...</div>
-      </Layout>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">Loading profile...</div>
     );
   }
 
   if (!userProfile) {
     return (
-      <Layout>
-        <div className="container mx-auto py-10 text-center">Please log in to view your account.</div>
-      </Layout>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">Please log in to view your account.</div>
     );
   }
 

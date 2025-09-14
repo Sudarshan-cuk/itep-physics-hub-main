@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://www.itepphysicshub.com/sitemap.xml
+Sitemap: https://www.itepphysicshub.vercel.app/sitemap.xml

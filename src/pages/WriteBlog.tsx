@@ -77,7 +77,7 @@ export default function WriteBlog() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">Write a Blog Post</h1>
         <p className="text-muted-foreground">
-          Share your thoughts, experiences, or insights with the ITEP community. 
+          Share your thoughts, experiences, or insights with the ITEP community across all courses. 
           Your post will be reviewed before publication.
         </p>
       </div>
@@ -97,8 +97,8 @@ export default function WriteBlog() {
             <div>
               <h4 className="font-semibold mb-2">Content Guidelines</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Write about physics education, teaching experiences, or academic insights</li>
-                <li>• Keep content relevant to the ITEP community</li>
+                <li>• Write about education, teaching experiences, or academic insights</li>
+                <li>• Keep content relevant to ITEP courses (Physics, Zoology, English, Economics, Commerce)</li>
                 <li>• Use clear, professional language</li>
                 <li>• Include proper citations when referencing sources</li>
               </ul>

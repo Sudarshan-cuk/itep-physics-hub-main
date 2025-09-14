@@ -132,7 +132,7 @@ export default function Blog() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <Newspaper className="h-8 w-8 text-primary" />
-            <h1 className="text-4xl font-bold text-foreground">Physics Hub Blog</h1>
+            <h1 className="text-4xl font-bold text-foreground">ITEP Hub Blog</h1>
           </div>
           {user && (
             <Link to="/write-blog">
@@ -144,7 +144,7 @@ export default function Blog() {
           )}
         </div>
         <p className="text-muted-foreground text-lg">
-          Latest insights, research updates, and guidance from the ITEP courses at Central University of Kerala
+          Latest insights, research updates, and guidance from ITEP courses at Central University of Kerala
         </p>
       </div>
 
@@ -219,11 +219,11 @@ export default function Blog() {
           <div className="bg-muted rounded-lg p-8 text-center">
             <h2 className="text-2xl font-bold text-foreground mb-4">Stay Updated</h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Stay connected with the latest developments in physics teacher education at ITEP. 
+              Stay connected with the latest developments in teacher education at ITEP, Central University of Kerala. 
               Our blog features insights on career opportunities, teaching methodologies, educational 
-              research, and guidance for aspiring physics educators. Whether you're considering 
-              joining our program, currently studying, or already working in physics education, 
-              you'll find valuable content to support your journey.
+              research, and guidance for aspiring educators across all ITEP courses including B.Sc. (Physics, Zoology), 
+              B.A. (English, Economics), and B.Com. Whether you're considering joining our program, currently studying, 
+              or already working in education, you'll find valuable content to support your teaching journey.
             </p>
           </div>
         </>

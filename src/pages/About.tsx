@@ -68,21 +68,22 @@ export default function About() {
           <h2 className="text-3xl font-bold text-foreground mb-6">Our Program</h2>
           <div className="prose prose-lg max-w-none text-muted-foreground">
             <p className="mb-4">
-              The Integrated Teacher Education Program (ITEP) in Physics is a pioneering 
-              initiative that combines comprehensive physics education with specialized 
+              The Integrated Teacher Education Program (ITEP) at Central University of Kerala is a pioneering 
+              initiative that combines comprehensive subject education with specialized 
               teacher training methodologies. Our program has been shaping passionate 
-              physics educators for over two decades.
+              educators across multiple disciplines for over two decades.
             </p>
             <p className="mb-4">
-              We offer a unique dual-degree program (B.Sc. Physics + B.Ed.) designed to 
+              We offer unique dual-degree programs including B.Sc. (Physics, Zoology) + B.Ed., 
+              B.A. (English, Economics) + B.Ed., and B.Com + B.Ed. designed to 
               develop both subject matter expertise and pedagogical skills. Our curriculum 
-              integrates advanced physics concepts with modern teaching methodologies, 
+              integrates advanced subject concepts with modern teaching methodologies, 
               educational psychology, and classroom management techniques.
             </p>
             <p>
-              With cutting-edge laboratory facilities and experienced teacher-educators, 
-              we prepare our students to become innovative physics teachers who can inspire 
-              the next generation of scientists and engineers.
+              With cutting-edge facilities and experienced teacher-educators, 
+              we prepare our students to become innovative teachers who can inspire 
+              the next generation of learners across all subjects.
             </p>
           </div>
         </div>
@@ -110,7 +111,7 @@ export default function About() {
               <div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">Expert Faculty</h3>
                 <p className="text-muted-foreground">
-                  Learn from experienced physics educators and researchers with years 
+                  Learn from experienced educators and researchers across all subjects with years 
                   of teaching and industry experience.
                 </p>
               </div>

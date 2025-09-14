@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -336,7 +335,6 @@ The future of physics education lies in the hands of well-prepared teachers who 
   }
 
   return (
-    <Layout>
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -439,6 +437,5 @@ The future of physics education lies in the hands of well-prepared teachers who 
           </div>
         )}
       </div>
-    </Layout>
   );
 }

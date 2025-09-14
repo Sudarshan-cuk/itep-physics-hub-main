@@ -1,4 +1,4 @@
-import { Layout } from '@/components/layout/Layout';
+
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -51,36 +51,34 @@ export function FollowUs() {
   }, [toast]);
 
   return (
-    <Layout>
-      <div className="container mx-auto py-8">
-        <h1 className="text-3xl font-bold mb-6 text-center">Follow Us</h1>
-        <p className="text-center text-muted-foreground mb-8">
-          Stay connected with ITEP HUB on our social media channels!
-        </p>
+    <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <h1 className="text-3xl font-bold mb-6 text-center">Follow Us</h1>
+      <p className="text-center text-muted-foreground mb-8">
+        Stay connected with ITEP HUB on our social media channels!
+      </p>
 
-        {loading ? (
-          <div className="text-center">Loading social accounts...</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {socialAccounts.map((account) => (
-              <Card key={account.id} className="text-center">
-                <CardHeader>
-                  {getIconComponent(account.platform)}
-                  <CardTitle>{capitalize(account.platform)}</CardTitle>
-                  <CardDescription>{account.url}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button asChild>
-                    <a href={account.url} target="_blank" rel="noopener noreferrer">
-                      Follow on {capitalize(account.platform)}
-                    </a>
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
-    </Layout>
+      {loading ? (
+        <div className="text-center">Loading social accounts...</div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {socialAccounts.map((account) => (
+            <Card key={account.id} className="text-center hover:shadow-lg transition-shadow">
+              <CardHeader>
+                {getIconComponent(account.platform)}
+                <CardTitle className="text-lg">{capitalize(account.platform)}</CardTitle>
+                <CardDescription className="text-sm break-all">{account.url}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="w-full">
+                  <a href={account.url} target="_blank" rel="noopener noreferrer">
+                    Follow on {capitalize(account.platform)}
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -45,7 +44,6 @@ export function Assignments() {
   }, [toast]);
 
   return (
-    <Layout>
       <div className="container mx-auto py-8">
         <h1 className="text-3xl font-bold mb-6">Assignments</h1>
         {loading ? (
@@ -79,6 +77,5 @@ export function Assignments() {
           </div>
         )}
       </div>
-    </Layout>
   );
 }

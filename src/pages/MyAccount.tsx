@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
@@ -69,7 +68,6 @@ export default function MyAccount() {
   }
 
   return (
-    <Layout>
       <div className="container mx-auto py-10">
         <Card>
           <CardHeader>
@@ -91,6 +89,5 @@ export default function MyAccount() {
           </CardContent>
         </Card>
       </div>
-    </Layout>
   );
 }

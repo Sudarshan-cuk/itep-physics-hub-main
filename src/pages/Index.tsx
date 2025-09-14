@@ -76,8 +76,7 @@ const Index = () => {
               ITEP HUB
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Integrated Teacher Education Program - Preparing Passionate Physics Educators 
-              for the Future of Science Education
+              Integrated Teacher Education Program - Empowering Future Educators Across Disciplines
             </p>
           </div>
           
@@ -161,9 +160,10 @@ const Index = () => {
           <div className="absolute top-1/2 left-1/4 w-16 h-16 border border-white/20 rounded-full"></div>
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl font-bold mb-6 font-serif">Ready to Join Our Physics Community?</h2>
+          <h2 className="text-4xl font-bold mb-6 font-serif">Ready to Join Our ITEP Community?</h2>
           <p className="text-xl mb-10 opacity-95 leading-relaxed font-light">
-            Get access to exclusive study materials, connect with peers, and stay updated with cutting-edge research in theoretical physics.
+            Designed for all student teachers at Central University of Kerala, offering ITEP B.Sc. (Physics, Zoology), ITEP B.A. (English, Economics), and B.Com.
+            Get access to exclusive study materials, connect with peers, and stay updated with your chosen discipline.
           </p>
           {!user && (
             <Link to="/auth">
@@ -185,7 +185,7 @@ const Index = () => {
                 <span className="font-bold text-lg">ITEP HUB</span>
               </div>
               <p className="text-muted-foreground">
-                Empowering physics education at Central University of Kerala.
+                Empowering student teachers across various disciplines at Central University of Kerala.
               </p>
             </div>
             

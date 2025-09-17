@@ -20,6 +20,7 @@ import { GalleryPage } from "./pages/GalleryPage";
 import { GalleryDetail } from "./pages/GalleryDetail";
 import { Galleries as AdminGalleries } from "./pages/admin/Galleries";
 import { ResearchPapers } from "./pages/ResearchPapers";
+import { BatchmatesPage } from "./pages/BatchmatesPage";
 import { LabReports } from "./pages/LabReports";
 import { Assignments } from "./pages/Assignments";
 import MyAccount from "./pages/MyAccount"; // Import the new MyAccount page
@@ -53,6 +54,7 @@ const App = () => (
                 <Route path="/research-papers" element={<ResearchPapers />} />
                 <Route path="/lab-reports" element={<LabReports />} />
                 <Route path="/assignments" element={<Assignments />} />
+                <Route path="/batchmates" element={<BatchmatesPage />} />
                 <Route path="/follow-us" element={<FollowUs />} />
                 <Route path="/write-blog" element={<ProtectedRoute><WriteBlog /></ProtectedRoute>} />
                 <Route path="/my-account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} /> {/* New MyAccount route */}

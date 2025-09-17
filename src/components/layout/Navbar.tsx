@@ -30,6 +30,7 @@ export function Navbar() {
   const navItems = [
     { name: 'Home', path: '/', public: true },
     { name: 'About Us', path: '/about', public: true },
+    { name: 'Batchmates', path: '/batchmates', public: true },
     { name: 'Blog', path: '/blog', public: true },
     { name: 'Gallery', path: '/gallery', public: true },
     { name: 'Contact', path: '/contact', public: true },

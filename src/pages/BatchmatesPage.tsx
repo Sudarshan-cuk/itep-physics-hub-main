@@ -23,6 +23,7 @@ export const BatchmatesPage = () => {
         variant: 'destructive',
       });
     } else {
+      console.log('Batchmates data:', data);
       setBatchmates(data);
       setFilteredBatchmates(data);
     }
@@ -32,6 +33,15 @@ export const BatchmatesPage = () => {
   useEffect(() => {
     fetchBatchmates();
   }, []);
+
+  useEffect(() => {
+    const results = batchmates.filter(batchmate =>
+      batchmate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      batchmate.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      batchmate.graduation_year.toString().includes(searchTerm)
+    );
+    setFilteredBatchmates(results);
+  }, [searchTerm, batchmates]);
 
   useEffect(() => {
     const results = batchmates.filter(batchmate =>

@@ -21,11 +21,17 @@ import {
   Trash2,
   Building,
   UploadCloud,
-  Newspaper
+  Newspaper,
+  Share2,
+  GraduationCap
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { motion } from 'framer-motion'; // already imported
-import { PageContainer } from '@/components/PageContainer'; // new import
+import { motion } from 'framer-motion';
+import { PageContainer } from '@/components/PageContainer';
+import { BlogManagement } from './admin/BlogManagement';
+import { Galleries } from './admin/Galleries';
+import { SocialAccounts } from './admin/SocialAccounts';
+import { Batchmates } from './admin/Batchmates';
 
 interface ContactMessage {
   id: string;
@@ -236,7 +242,7 @@ function AdminContent() {
         transition={{ delay: 0.4, duration: 0.5 }}
       >
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-8">
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Users
@@ -249,10 +255,6 @@ function AdminContent() {
               <Building className="h-4 w-4" />
               Contact
             </TabsTrigger>
-            <TabsTrigger value="content" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              Content
-            </TabsTrigger>
             <TabsTrigger value="blogs" className="flex items-center gap-2">
               <Newspaper className="h-4 w-4" />
               Blogs
@@ -264,6 +266,14 @@ function AdminContent() {
             <TabsTrigger value="materials" className="flex items-center gap-2">
               <UploadCloud className="h-4 w-4" />
               Materials
+            </TabsTrigger>
+            <TabsTrigger value="social" className="flex items-center gap-2">
+              <Share2 className="h-4 w-4" />
+              Social
+            </TabsTrigger>
+            <TabsTrigger value="batchmates" className="flex items-center gap-2">
+              <GraduationCap className="h-4 w-4" />
+              Batchmates
             </TabsTrigger>
           </TabsList>
 
@@ -279,8 +289,8 @@ function AdminContent() {
               <CardContent>
                 <div className="space-y-4">
                   {messages.map((message) => (
-                    <div 
-                      key={message.id} 
+                    <div
+                      key={message.id}
                       className={`p-4 border rounded-lg ${!message.read ? 'bg-muted/50' : ''}`}
                     >
                       <div className="flex items-start justify-between mb-2">
@@ -340,68 +350,24 @@ function AdminContent() {
             <ContactManagement />
           </TabsContent>
 
-          <TabsContent value="content">
-            <Card>
-              <CardHeader>
-                <CardTitle>Content Management</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-xl font-medium text-muted-foreground mb-2">
-                    Blog Management Coming Soon
-                  </p>
-                  <p className="text-muted-foreground">
-                    Create and manage blog posts, announcements, and other content
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
           <TabsContent value="blogs">
-            <Card>
-              <CardHeader>
-                <CardTitle>Blog Management</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Newspaper className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-xl font-medium text-muted-foreground mb-2">
-                    Blog Management
-                  </p>
-                  <p className="text-muted-foreground mb-6">
-                    Create, edit, and manage blog posts and announcements
-                  </p>
-                  <Button asChild>
-                    <a href="/admin/blogs">Manage Blogs</a>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <BlogManagement />
           </TabsContent>
 
           <TabsContent value="gallery">
-            <Card>
-              <CardHeader>
-                <CardTitle>Gallery Management</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Image className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-xl font-medium text-muted-foreground mb-2">
-                    Photo Management Coming Soon
-                  </p>
-                  <p className="text-muted-foreground">
-                    Upload, organize, and manage department photos and galleries
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <Galleries />
           </TabsContent>
 
           <TabsContent value="materials">
             <StudyMaterialUpload />
+          </TabsContent>
+
+          <TabsContent value="social">
+            <SocialAccounts />
+          </TabsContent>
+
+          <TabsContent value="batchmates">
+            <Batchmates />
           </TabsContent>
         </Tabs>
       </motion.div>

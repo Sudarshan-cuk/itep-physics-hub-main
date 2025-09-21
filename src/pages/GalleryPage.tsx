@@ -4,11 +4,9 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
 import { PageContainer } from '@/components/PageContainer';
-import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 
 export const GalleryPage = () => {
-  const { user, loading: authLoading } = useAuth();
   const [galleries, setGalleries] = useState([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -29,32 +27,14 @@ export const GalleryPage = () => {
   };
 
   useEffect(() => {
-    if (!authLoading && user) {
-      fetchGalleries();
-    } else if (!authLoading && !user) {
-      setLoading(false); // Stop loading if no user and auth is done
-    }
-  }, [user, authLoading]);
+    fetchGalleries();
+  }, []);
 
-  if (authLoading || loading) {
+  if (loading) {
     return (
       <PageContainer>
         <h1 className="text-3xl font-bold mb-6">Our Galleries</h1>
         <div>Loading galleries...</div>
-      </PageContainer>
-    );
-  }
-
-  if (!user) {
-    return (
-      <PageContainer>
-        <h1 className="text-3xl font-bold mb-6">Our Galleries</h1>
-        <p className="text-lg text-muted-foreground mb-6">
-          Please log in to view the galleries.
-        </p>
-        <Link to="/auth">
-          <Button>Login</Button>
-        </Link>
       </PageContainer>
     );
   }
@@ -67,14 +47,22 @@ export const GalleryPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {galleries.map((gallery) => (
-            <Link to={`/gallery/${gallery.id}`} key={gallery.id}>
-              <Card className="h-full flex flex-col">
-                <CardHeader>
-                  <CardTitle>{gallery.name}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <p className="text-sm text-gray-600">{gallery.description || 'No description available.'}</p>
-                  <p className="text-xs text-gray-500 mt-2">Created: {new Date(gallery.created_at).toLocaleDateString()}</p>
+            <Link to={`/gallery/${gallery.id}`} key={gallery.id} className="block">
+              <Card className="h-full flex flex-col overflow-hidden">
+                {/* Cover image if available */}
+                {gallery.cover_image_url ? (
+                  <div className="h-48 w-full overflow-hidden">
+                    <img src={gallery.cover_image_url} alt={gallery.name} className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="h-48 w-full bg-muted/30 flex items-center justify-center">
+                    <span className="text-muted-foreground">No cover image</span>
+                  </div>
+                )}
+                <CardContent className="p-4">
+                  <h3 className="text-lg font-semibold mb-1">{gallery.name}</h3>
+                  <p className="text-sm text-gray-600 mb-2">{gallery.description || 'No description available.'}</p>
+                  <p className="text-xs text-gray-500">Created: {new Date(gallery.created_at).toLocaleDateString()}</p>
                 </CardContent>
               </Card>
             </Link>

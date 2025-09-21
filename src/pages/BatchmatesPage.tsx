@@ -86,11 +86,17 @@ export const BatchmatesPage = () => {
 				.from('batchmate-photos')
 				.upload(filePath, newPhoto);
 			if (uploadError) {
+				// Log full error for debugging (inspect status/code from Supabase)
+				console.error('Supabase upload error:', uploadError);
 				toast({
 					title: 'Photo Upload Error',
-					description: uploadError.message,
+					description: uploadError.message || 'Failed to upload photo. Check storage bucket exists and keys.',
 					variant: 'destructive'
 				});
+				// If bucket is missing, provide a clearer hint in console as well
+				if (uploadError?.message?.toLowerCase().includes('bucket')) {
+					console.error('Storage bucket may not exist: confirm the bucket name "batchmate-photos" in Supabase Storage.');
+				}
 				return;
 			}
 			const { data: publicUrlData } = supabase

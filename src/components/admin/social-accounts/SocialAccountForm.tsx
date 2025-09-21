@@ -7,23 +7,31 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Tables } from '@/integrations/supabase/types';
+
+type SocialAccount = Tables<'social_accounts'>;
 
 const formSchema = z.object({
   platform: z.string().min(2, { message: 'Platform name must be at least 2 characters.' }),
   url: z.string().url({ message: 'Invalid URL format.' }),
-  icon: z.string().optional(),
-  display_order: z.number().int().optional(),
+  icon_name: z.string().optional(),
+  display_order: z.number().int().optional().nullable(),
 });
 
-export const SocialAccountForm = ({ socialAccount, onSuccess }) => {
+type SocialAccountFormProps = {
+  socialAccount: SocialAccount | null;
+  onSuccess: () => void;
+};
+
+export const SocialAccountForm = ({ socialAccount, onSuccess }: SocialAccountFormProps) => {
   const { toast } = useToast();
-  const form = useForm({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       platform: socialAccount?.platform || '',
       url: socialAccount?.url || '',
-      icon: socialAccount?.icon || '',
-      display_order: socialAccount?.display_order || 0,
+      icon_name: socialAccount?.icon_name || '',
+      display_order: socialAccount?.display_order ?? undefined,
     },
   });
 
@@ -32,37 +40,28 @@ export const SocialAccountForm = ({ socialAccount, onSuccess }) => {
       form.reset({
         platform: socialAccount.platform,
         url: socialAccount.url,
-        icon: socialAccount.icon || '',
-        display_order: socialAccount.display_order || 0,
+        icon_name: socialAccount.icon_name || '',
+        display_order: socialAccount.display_order ?? undefined,
       });
     }
   }, [socialAccount, form]);
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const dataToSubmit = {
         ...values,
-        display_order: values.display_order || null, // Ensure null for optional integer
       };
 
-      let error = null;
       if (socialAccount) {
-        // Update existing social account
-        const { error: updateError } = await supabase
-          .from('social_accounts')
-          .update(dataToSubmit)
-          .eq('id', socialAccount.id);
-        error = updateError;
+        const { error } = await supabase.from('social_accounts').update({ ...dataToSubmit, user_id: socialAccount.user_id }).eq('id', socialAccount.id);
+        if (error) throw error;
       } else {
-        // Create new social account
-        const { error: createError } = await supabase
-          .from('social_accounts')
-          .insert(dataToSubmit);
-        error = createError;
-      }
-
-      if (error) {
-        throw error;
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) throw new Error('You must be logged in to create a social account.');
+        const { error } = await supabase.from('social_accounts').insert({ ...dataToSubmit, user_id: user.id });
+        if (error) throw error;
       }
 
       toast({
@@ -71,7 +70,7 @@ export const SocialAccountForm = ({ socialAccount, onSuccess }) => {
       });
       onSuccess();
       form.reset();
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: 'Error',
         description: error.message,
@@ -111,10 +110,10 @@ export const SocialAccountForm = ({ socialAccount, onSuccess }) => {
         />
         <FormField
           control={form.control}
-          name="icon"
+          name="icon_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Icon (Optional)</FormLabel>
+              <FormLabel>Icon Name (Optional)</FormLabel>
               <FormControl>
                 <Input placeholder="e.g., fab fa-facebook or image URL" {...field} />
               </FormControl>
@@ -129,7 +128,13 @@ export const SocialAccountForm = ({ socialAccount, onSuccess }) => {
             <FormItem>
               <FormLabel>Display Order (Optional)</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="Enter display order" {...field} onChange={event => field.onChange(Number(event.target.value))} />
+                <Input
+                  type="number"
+                  placeholder="Enter display order"
+                  {...field}
+                  value={field.value ?? ''}
+                  onChange={event => field.onChange(event.target.value === '' ? null : Number(event.target.value))}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

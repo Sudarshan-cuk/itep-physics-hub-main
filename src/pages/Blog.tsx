@@ -8,6 +8,7 @@ import { Newspaper, Search, Calendar, User, ArrowRight, Plus } from 'lucide-reac
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 import { Link } from 'react-router-dom';
+import { PageContainer } from '@/components/PageContainer';
 
 interface BlogPost {
   id: string;
@@ -74,7 +75,7 @@ export default function Blog() {
     }
   };
 
-  const filteredPosts = posts.filter(post => 
+  const filteredPosts = posts.filter(post =>
     post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -89,44 +90,46 @@ export default function Blog() {
 
   if (selectedPost) {
     return (
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-4xl">
-          <Button 
-            variant="outline" 
-            onClick={() => setSelectedPost(null)}
-            className="mb-6"
-          >
-          <ArrowRight className="h-4 w-4 mr-2 rotate-180" />
-          Back to Blog
-          </Button>
-          
-        <article className="prose prose-lg max-w-none">
-            <header className="mb-8">
-              <h1 className="text-4xl font-bold text-foreground mb-4">
-                {selectedPost.title}
-              </h1>
-            <div className="flex items-center gap-4 text-muted-foreground mb-6">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                <span>{selectedPost.profiles?.full_name || 'Unknown Author'}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  <span>{formatDate(selectedPost.published_at)}</span>
-                </div>
-              </div>
-            </header>
+      <PageContainer>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-4xl">
+            <Button
+              variant="outline"
+              onClick={() => setSelectedPost(null)}
+              className="mb-6"
+            >
+            <ArrowRight className="h-4 w-4 mr-2 rotate-180" />
+            Back to Blog
+            </Button>
             
-              <div 
-            className="prose prose-lg max-w-none text-foreground"
-                dangerouslySetInnerHTML={{ __html: selectedPost.content }}
-              />
-          </article>
-        </div>
+          <article className="prose prose-lg max-w-none">
+              <header className="mb-8">
+                <h1 className="text-4xl font-bold text-foreground mb-4">
+                  {selectedPost.title}
+                </h1>
+              <div className="flex items-center gap-4 text-muted-foreground mb-6">
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                  <span>{selectedPost.profiles?.full_name || 'Unknown Author'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    <span>{formatDate(selectedPost.published_at)}</span>
+                  </div>
+                </div>
+              </header>
+              
+                <div
+              className="prose prose-lg max-w-none text-foreground"
+                  dangerouslySetInnerHTML={{ __html: selectedPost.content }}
+                />
+            </article>
+          </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <PageContainer>
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
@@ -173,8 +176,8 @@ export default function Blog() {
           {filteredPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {filteredPosts.map((post) => (
-                  <Card 
-                    key={post.id} 
+                  <Card
+                    key={post.id}
                   className="hover:shadow-lg transition-shadow cursor-pointer"
                     onClick={() => setSelectedPost(post)}
                   >
@@ -207,7 +210,7 @@ export default function Blog() {
                 {searchTerm ? 'No posts found' : 'No posts available'}
               </h3>
                 <p className="text-muted-foreground">
-                {searchTerm 
+                {searchTerm
                   ? 'Try adjusting your search terms or browse all posts.'
                   : 'Check back later for new blog posts.'
                 }
@@ -219,15 +222,15 @@ export default function Blog() {
           <div className="bg-muted rounded-lg p-8 text-center">
             <h2 className="text-2xl font-bold text-foreground mb-4">Stay Updated</h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Stay connected with the latest developments in teacher education at ITEP, Central University of Kerala. 
-              Our blog features insights on career opportunities, teaching methodologies, educational 
-              research, and guidance for aspiring educators across all ITEP courses including B.Sc. (Physics, Zoology), 
-              B.A. (English, Economics), and B.Com. Whether you're considering joining our program, currently studying, 
+              Stay connected with the latest developments in teacher education at ITEP, Central University of Kerala.
+              Our blog features insights on career opportunities, teaching methodologies, educational
+              research, and guidance for aspiring educators across all ITEP courses including B.Sc. (Physics, Zoology),
+              B.A. (English, Economics), and B.Com. Whether you're considering joining our program, currently studying,
               or already working in education, you'll find valuable content to support your teaching journey.
             </p>
           </div>
         </>
         )}
-      </div>
+      </PageContainer>
   );
 }

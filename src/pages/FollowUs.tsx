@@ -26,6 +26,8 @@ const getIconComponent = (platform: string) => {
   }
 };
 
+import { PageContainer } from '@/components/PageContainer';
+
 export function FollowUs() {
   const [socialAccounts, setSocialAccounts] = useState<SocialAccount[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,34 +53,36 @@ export function FollowUs() {
   }, [toast]);
 
   return (
-    <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold mb-6 text-center">Follow Us</h1>
-      <p className="text-center text-muted-foreground mb-8">
-        Stay connected with ITEP HUB on our social media channels!
-      </p>
+    <PageContainer>
+      <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <h1 className="text-3xl font-bold mb-6 text-center">Follow Us</h1>
+        <p className="text-center text-muted-foreground mb-8">
+          Stay connected with ITEP HUB on our social media channels!
+        </p>
 
-      {loading ? (
-        <div className="text-center">Loading social accounts...</div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {socialAccounts.map((account) => (
-            <Card key={account.id} className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                {getIconComponent(account.platform)}
-                <CardTitle className="text-lg">{capitalize(account.platform)}</CardTitle>
-                <CardDescription className="text-sm break-all">{account.url}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild className="w-full">
-                  <a href={account.url} target="_blank" rel="noopener noreferrer">
-                    Follow on {capitalize(account.platform)}
-                  </a>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-    </div>
+        {loading ? (
+          <div className="text-center">Loading social accounts...</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {socialAccounts.map((account) => (
+              <Card key={account.id} className="text-center hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  {getIconComponent(account.platform)}
+                  <CardTitle className="text-lg">{capitalize(account.platform)}</CardTitle>
+                  <CardDescription className="text-sm break-all">{account.url}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild className="w-full">
+                    <a href={account.url} target="_blank" rel="noopener noreferrer">
+                      Follow on {capitalize(account.platform)}
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+    </PageContainer>
   );
 }

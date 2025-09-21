@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageContainer } from '@/components/PageContainer';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types'; // Import Tables type
@@ -58,15 +59,15 @@ export const GalleryDetail = () => {
   }, [id]);
 
   if (loading) {
-    return <div className="container mx-auto py-10">Loading gallery...</div>;
+    return <PageContainer>Loading gallery...</PageContainer>;
   }
 
   if (!gallery) {
-    return <div className="container mx-auto py-10">Gallery not found.</div>;
+    return <PageContainer>Gallery not found.</PageContainer>;
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <PageContainer>
       <h1 className="text-3xl font-bold mb-4">{gallery.title}</h1> {/* Changed gallery.name to gallery.title */}
       <p className="text-lg text-gray-700 mb-6">{gallery.description}</p>
 
@@ -95,6 +96,6 @@ export const GalleryDetail = () => {
           )}
         </CardContent>
       </Card>
-    </div>
+  </PageContainer>
   );
 };

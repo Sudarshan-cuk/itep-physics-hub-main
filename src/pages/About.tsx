@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookOpen, Users, Award, Beaker, GraduationCap, Globe, Target, Heart, Star, Building } from 'lucide-react';
+import { PageContainer } from '@/components/PageContainer';
 
 export default function About() {
   const programStats = [
@@ -42,7 +43,7 @@ export default function About() {
   ];
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <PageContainer>
       {/* Header */}
       <div className="mb-12">
         <div className="flex items-center gap-3 mb-4">
@@ -50,13 +51,13 @@ export default function About() {
           <h1 className="text-4xl font-bold text-foreground">About ITEP</h1>
         </div>
         <p className="text-muted-foreground text-lg leading-relaxed">
-          Welcome to the Integrated Teacher Education Program (ITEP) at the Department of Education, Kerala University. 
-          This is an unofficial website created by students and approved by faculty to help fellow students 
+          Welcome to the Integrated Teacher Education Program (ITEP) at the Department of Education, Kerala University.
+          This is an unofficial website created by students and approved by faculty to help fellow students
           and provide information about our teacher training programs.
         </p>
         <div className="mt-4 p-4 bg-muted rounded-lg">
           <p className="text-sm text-muted-foreground">
-            <strong>Disclaimer:</strong> This is an unofficial website. For official information, 
+            <strong>Disclaimer:</strong> This is an unofficial website. For official information,
             please visit the Kerala University official website.
           </p>
         </div>
@@ -68,21 +69,21 @@ export default function About() {
           <h2 className="text-3xl font-bold text-foreground mb-6">Our Program</h2>
           <div className="prose prose-lg max-w-none text-muted-foreground">
             <p className="mb-4">
-              The Integrated Teacher Education Program (ITEP) at Central University of Kerala is a pioneering 
-              initiative that combines comprehensive subject education with specialized 
-              teacher training methodologies. Our program has been shaping passionate 
+              The Integrated Teacher Education Program (ITEP) at Central University of Kerala is a pioneering
+              initiative that combines comprehensive subject education with specialized
+              teacher training methodologies. Our program has been shaping passionate
               educators across multiple disciplines for over two decades.
             </p>
             <p className="mb-4">
-              We offer unique dual-degree programs including B.Sc. (Physics, Zoology) + B.Ed., 
-              B.A. (English, Economics) + B.Ed., and B.Com + B.Ed. designed to 
-              develop both subject matter expertise and pedagogical skills. Our curriculum 
-              integrates advanced subject concepts with modern teaching methodologies, 
+              We offer unique dual-degree programs including B.Sc. (Physics, Zoology) + B.Ed.,
+              B.A. (English, Economics) + B.Ed., and B.Com + B.Ed. designed to
+              develop both subject matter expertise and pedagogical skills. Our curriculum
+              integrates advanced subject concepts with modern teaching methodologies,
               educational psychology, and classroom management techniques.
             </p>
             <p>
-              With cutting-edge facilities and experienced teacher-educators, 
-              we prepare our students to become innovative teachers who can inspire 
+              With cutting-edge facilities and experienced teacher-educators,
+              we prepare our students to become innovative teachers who can inspire
               the next generation of learners across all subjects.
             </p>
           </div>
@@ -98,7 +99,7 @@ export default function About() {
               <div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">University Affiliation</h3>
                 <p className="text-muted-foreground">
-                  Directly affiliated with Kerala University, ensuring quality education 
+                  Directly affiliated with Kerala University, ensuring quality education
                   and recognized degrees.
                 </p>
               </div>
@@ -111,7 +112,7 @@ export default function About() {
               <div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">Expert Faculty</h3>
                 <p className="text-muted-foreground">
-                  Learn from experienced educators and researchers across all subjects with years 
+                  Learn from experienced educators and researchers across all subjects with years
                   of teaching and industry experience.
                 </p>
               </div>
@@ -124,7 +125,7 @@ export default function About() {
               <div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">Career Opportunities</h3>
                 <p className="text-muted-foreground">
-                  Excellent placement record with opportunities in schools, colleges, 
+                  Excellent placement record with opportunities in schools, colleges,
                   and educational institutions across Kerala and beyond.
                 </p>
               </div>
@@ -177,7 +178,7 @@ export default function About() {
       <div className="text-center bg-muted rounded-lg p-8">
         <h2 className="text-2xl font-bold text-foreground mb-4">Ready to Start Your Teaching Journey?</h2>
         <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-          Join our community of passionate physics educators and make a difference in the lives of students. 
+          Join our community of passionate physics educators and make a difference in the lives of students.
           Apply now to become part of the next generation of innovative teachers.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -189,6 +190,6 @@ export default function About() {
           </button>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

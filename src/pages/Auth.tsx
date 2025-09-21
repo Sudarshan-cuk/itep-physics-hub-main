@@ -9,6 +9,7 @@ import { BookOpen, Eye, EyeOff, Phone } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc'; // Importing Google icon from react-icons
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
+import { PageContainer } from '@/components/PageContainer';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -60,8 +61,9 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md">
+    <PageContainer>
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
             <BookOpen className="h-8 w-8 text-primary" />
@@ -243,8 +245,9 @@ const Auth = () => {
             </Link>
           </CardFooter>
         </form>
-      </Card>
-    </div>
+        </Card>
+      </div>
+    </PageContainer>
   );
 };
 

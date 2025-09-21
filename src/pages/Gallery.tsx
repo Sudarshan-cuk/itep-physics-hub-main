@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Camera, Search, Calendar, User, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { PageContainer } from '@/components/PageContainer';
 import { Tables } from '@/integrations/supabase/types'; // Import Tables type
 
 // Define a base Photo type from the Supabase schema
@@ -230,7 +231,7 @@ export default function Gallery() {
 
 
   return (
-      <div className="container mx-auto px-4 py-8">
+      <PageContainer>
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
@@ -371,6 +372,6 @@ export default function Gallery() {
             </p>
           </div>
         )}
-      </div>
+  </PageContainer>
   );
 }

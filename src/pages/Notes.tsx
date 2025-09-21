@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Edit, Trash2, BookOpen, Paperclip, X } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { PageContainer } from '@/components/PageContainer';
 
 
 // The Note interface now includes an optional attachment UR
@@ -168,7 +169,7 @@ function NotesContent() {
   });
 
   return (
-      <div className="container mx-auto px-4 py-8">
+      <PageContainer>
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
             <BookOpen className="h-8 w-8 text-primary" />
@@ -352,7 +353,7 @@ function NotesContent() {
             )}
           </div>
         )}
-      </div>
+  </PageContainer>
   );
 }
 

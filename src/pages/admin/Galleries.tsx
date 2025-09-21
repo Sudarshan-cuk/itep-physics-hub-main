@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { GalleryForm } from '@/components/admin/galleries/GalleryForm';
+import { PageContainer } from '@/components/PageContainer';
 import { PhotoManagement } from '@/components/admin/galleries/PhotoManagement';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tables } from '@/integrations/supabase/types'; // Import Tables type
@@ -76,7 +77,7 @@ export const Galleries = () => {
   };
 
   return (
-    <div className="container mx-auto py-10">
+    <PageContainer>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-2xl font-bold">Gallery Management</CardTitle>
@@ -137,6 +138,6 @@ export const Galleries = () => {
           </Tabs>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 };

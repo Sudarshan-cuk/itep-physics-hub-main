@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { BlogForm } from '@/components/admin/BlogForm';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { PageContainer } from '@/components/PageContainer';
 
 export default function WriteBlog() {
   const { user } = useAuth();
@@ -19,7 +20,7 @@ export default function WriteBlog() {
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <PageContainer>
         <Card className="max-w-2xl mx-auto text-center">
           <CardContent className="p-8">
             <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -32,13 +33,13 @@ export default function WriteBlog() {
             </Link>
           </CardContent>
         </Card>
-      </div>
+  </PageContainer>
     );
   }
 
   if (submitted) {
     return (
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <PageContainer>
         <Card className="max-w-2xl mx-auto text-center">
           <CardContent className="p-8">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -59,12 +60,12 @@ export default function WriteBlog() {
             </div>
           </CardContent>
         </Card>
-      </div>
+  </PageContainer>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <PageContainer>
       <div className="mb-6">
         <Link to="/blog">
           <Button variant="outline" className="mb-4">
@@ -115,6 +116,6 @@ export default function WriteBlog() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 }

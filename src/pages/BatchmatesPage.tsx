@@ -132,7 +132,7 @@ export const BatchmatesPage = () => {
 			<header className="mb-10 text-center">
 				<h1 className="text-3xl font-bold">Our Batchmates</h1>
 			</header>
-      
+			
 			{/* Existing Join Form */}
 			<div className="mb-6">
 				<h2 className="text-xl font-semibold mb-2">Join Your Batch</h2>
@@ -145,7 +145,7 @@ export const BatchmatesPage = () => {
 					<Button type="submit">Join</Button>
 				</form>
 			</div>
-      
+
 			{/* Existing Search Bar */}
 			<div className="flex items-center space-x-2 mb-6">
 				<Input
@@ -159,7 +159,7 @@ export const BatchmatesPage = () => {
 					<Search className="h-4 w-4" />
 				</Button>
 			</div>
-      
+	
 			{/* Existing Content */}
 			{loading ? (
 				<div className="flex justify-center items-center">

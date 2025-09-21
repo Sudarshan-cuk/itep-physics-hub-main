@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
+import { PageContainer } from '@/components/PageContainer';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 
@@ -37,16 +38,16 @@ export const GalleryPage = () => {
 
   if (authLoading || loading) {
     return (
-      <div className="container mx-auto py-10 text-center">
+      <PageContainer>
         <h1 className="text-3xl font-bold mb-6">Our Galleries</h1>
         <div>Loading galleries...</div>
-      </div>
+      </PageContainer>
     );
   }
 
   if (!user) {
     return (
-      <div className="container mx-auto py-10 text-center">
+      <PageContainer>
         <h1 className="text-3xl font-bold mb-6">Our Galleries</h1>
         <p className="text-lg text-muted-foreground mb-6">
           Please log in to view the galleries.
@@ -54,12 +55,12 @@ export const GalleryPage = () => {
         <Link to="/auth">
           <Button>Login</Button>
         </Link>
-      </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <PageContainer>
       <h1 className="text-3xl font-bold mb-6">Our Galleries</h1>
       {galleries.length === 0 ? (
         <p className="text-muted-foreground">No galleries available yet.</p>
@@ -80,6 +81,6 @@ export const GalleryPage = () => {
           ))}
         </div>
       )}
-    </div>
+  </PageContainer>
   );
 };

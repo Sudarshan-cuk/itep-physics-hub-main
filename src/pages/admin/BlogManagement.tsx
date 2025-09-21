@@ -33,6 +33,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/use-auth';
 import { BlogForm } from '@/components/admin/BlogForm';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { PageContainer } from '@/components/PageContainer';
 
 interface BlogPost {
   id: string;
@@ -176,7 +177,7 @@ export function BlogManagement() {
 
   if (showForm) {
     return (
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <PageContainer>
         <div className="mb-6">
           <Button
             variant="outline"
@@ -201,12 +202,12 @@ export function BlogManagement() {
             setSelectedPost(null);
           }}
         />
-      </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <PageContainer>
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
@@ -251,6 +252,7 @@ export function BlogManagement() {
             </div>
           </CardContent>
         </Card>
+
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center">
@@ -264,6 +266,7 @@ export function BlogManagement() {
             </div>
           </CardContent>
         </Card>
+
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center">
@@ -379,7 +382,7 @@ export function BlogManagement() {
         </CardContent>
       </Card>
 
-      {/* Delete Confirmation Dialog */}
+  {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deletePost} onOpenChange={() => setDeletePost(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -396,6 +399,6 @@ export function BlogManagement() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+  </PageContainer>
   );
 }

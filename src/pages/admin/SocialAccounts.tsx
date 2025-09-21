@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { SocialAccountForm } from '@/components/admin/social-accounts/SocialAccountForm';
+import { PageContainer } from '@/components/PageContainer';
 
 export const SocialAccounts = () => {
   const [socialAccounts, setSocialAccounts] = useState([]);
@@ -70,7 +71,7 @@ export const SocialAccounts = () => {
   };
 
   return (
-    <div className="container mx-auto py-10">
+    <PageContainer>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-2xl font-bold">Social Account Management</CardTitle>
@@ -122,6 +123,6 @@ export const SocialAccounts = () => {
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 };

@@ -54,17 +54,17 @@ export function Navbar() {
   }
 
   return (
-    <nav className="bg-card border-b border-border sticky top-0 z-50">
+    <nav className="bg-card border-b border-border sticky top-0 z-50" role="navigation" aria-label="Main navigation">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center">
+            <Link to="/" className="flex-shrink-0 flex items-center" aria-label="Homepage">
               <h1 className="text-xl font-bold text-primary">ITEP HUB</h1>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-8" role="menubar" aria-label="Primary">
             {navItems.map((item) => {
               if (!item.public && !user) return null;
               
@@ -77,6 +77,7 @@ export function Navbar() {
                       ? 'text-primary border-b-2 border-primary'
                       : 'text-muted-foreground hover:text-primary'
                   }`}
+                  role="menuitem"
                 >
                   {item.name}
                 </Link>
@@ -108,11 +109,14 @@ export function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+      <div className="md:hidden flex items-center">
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        aria-expanded={isMobileMenuOpen}
+        aria-controls="mobile-menu"
+        aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
               {isMobileMenuOpen ? (
                 <X className="h-5 w-5" />
@@ -125,8 +129,8 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-border">
+          <div className="md:hidden" id="mobile-menu">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-border" role="menu" aria-label="Mobile primary">
               {navItems.map((item) => {
                 if (!item.public && !user) return null;
                 
@@ -140,6 +144,7 @@ export function Navbar() {
                         : 'text-muted-foreground hover:text-primary'
                     }`}
                     onClick={() => setIsMobileMenuOpen(false)}
+                    role="menuitem"
                   >
                     {item.name}
                   </Link>

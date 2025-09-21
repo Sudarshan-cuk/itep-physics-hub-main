@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ProfileForm } from '@/components/user/ProfileForm';
 import { SocialAccountsForm } from '@/components/user/SocialAccountsForm.tsx';
 import { Tables } from '@/integrations/supabase/types';
+import { PageContainer } from '@/components/PageContainer';
 
 type Profile = Tables<'profiles'>;
 
@@ -53,18 +54,18 @@ export default function MyAccount() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">Loading profile...</div>
+      <PageContainer>Loading profile...</PageContainer>
     );
   }
 
   if (!userProfile) {
     return (
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">Please log in to view your account.</div>
+      <PageContainer>Please log in to view your account.</PageContainer>
     );
   }
 
   return (
-      <div className="container mx-auto py-10">
+      <PageContainer>
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl font-bold">My Account</CardTitle>
@@ -84,6 +85,6 @@ export default function MyAccount() {
             </Tabs>
           </CardContent>
         </Card>
-      </div>
+  </PageContainer>
   );
 }

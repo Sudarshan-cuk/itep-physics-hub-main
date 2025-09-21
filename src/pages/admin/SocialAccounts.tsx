@@ -18,6 +18,7 @@ export const SocialAccounts = () => {
     setLoading(true);
     const { data, error } = await supabase.from('social_accounts').select('*').order('display_order', { ascending: true });
     if (error) {
+      console.error('Failed to fetch social accounts:', error); // Added log for debugging
       toast({
         title: 'Error',
         description: error.message,

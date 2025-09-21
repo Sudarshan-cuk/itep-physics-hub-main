@@ -24,6 +24,8 @@ import {
   Newspaper
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion'; // already imported
+import { PageContainer } from '@/components/PageContainer'; // new import
 
 interface ContactMessage {
   id: string;
@@ -34,6 +36,18 @@ interface ContactMessage {
   read: boolean;
   created_at: string;
 }
+
+// Common animation variants used throughout the page
+const pageVariants = {
+	initial: { opacity: 0, y: 20 },
+	animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+	exit: { opacity: 0, y: -20, transition: { duration: 0.5 } }
+};
+
+const headerVariants = {
+	initial: { y: -20, opacity: 0 },
+	animate: { y: 0, opacity: 1, transition: { delay: 0.2, duration: 0.5 } }
+};
 
 function AdminContent() {
   const { toast } = useToast();
@@ -136,18 +150,20 @@ function AdminContent() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-4 text-muted-foreground">Loading admin dashboard...</p>
-          </div>
+      <PageContainer>
+        {/* Loading animation remains */}
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading admin dashboard...</p>
         </div>
+      </PageContainer>
     );
   }
 
   return (
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
+    <PageContainer>
+      {/* Animated Header */}
+      <motion.div variants={headerVariants}>
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
             <Settings className="h-8 w-8 text-primary" />
@@ -157,59 +173,68 @@ function AdminContent() {
             Manage users, content, and system settings
           </p>
         </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Users</p>
-                  <p className="text-2xl font-bold text-foreground">{stats.totalUsers}</p>
-                </div>
-                <Users className="h-8 w-8 text-primary" />
+      </motion.div>
+      {/* Stats Cards */}
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+      >
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Users</p>
+                <p className="text-2xl font-bold text-foreground">{stats.totalUsers}</p>
               </div>
-            </CardContent>
-          </Card>
+              <Users className="h-8 w-8 text-primary" />
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Pending Approvals</p>
-                  <p className="text-2xl font-bold text-foreground">{stats.pendingApprovals}</p>
-                </div>
-                <CheckCircle className="h-8 w-8 text-primary" />
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Pending Approvals</p>
+                <p className="text-2xl font-bold text-foreground">{stats.pendingApprovals}</p>
               </div>
-            </CardContent>
-          </Card>
+              <CheckCircle className="h-8 w-8 text-primary" />
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Unread Messages</p>
-                  <p className="text-2xl font-bold text-foreground">{stats.unreadMessages}</p>
-                </div>
-                <MessageSquare className="h-8 w-8 text-primary" />
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Unread Messages</p>
+                <p className="text-2xl font-bold text-foreground">{stats.unreadMessages}</p>
               </div>
-            </CardContent>
-          </Card>
+              <MessageSquare className="h-8 w-8 text-primary" />
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Messages</p>
-                  <p className="text-2xl font-bold text-foreground">{stats.totalMessages}</p>
-                </div>
-                <FileText className="h-8 w-8 text-primary" />
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Messages</p>
+                <p className="text-2xl font-bold text-foreground">{stats.totalMessages}</p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content */}
+              <FileText className="h-8 w-8 text-primary" />
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+      {/* Main Content Tabs */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+      >
         <Tabs defaultValue="users" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
             <TabsTrigger value="users" className="flex items-center gap-2">
@@ -379,7 +404,8 @@ function AdminContent() {
             <StudyMaterialUpload />
           </TabsContent>
         </Tabs>
-      </div>
+      </motion.div>
+    </PageContainer>
   );
 }
 

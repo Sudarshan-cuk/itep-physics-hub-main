@@ -47,9 +47,9 @@ export const AnimatedRoutes = () => {
         <Route path="/follow-us" element={<FollowUs />} />
         <Route path="/write-blog" element={<ProtectedRoute><WriteBlog /></ProtectedRoute>} />
         <Route path="/my-account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} />
-        <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-        <Route path="/admin/galleries" element={<ProtectedRoute><AdminGalleries /></ProtectedRoute>} />
-        <Route path="/admin/blogs" element={<ProtectedRoute><BlogManagement /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
+        <Route path="/admin/galleries" element={<ProtectedRoute requireAdmin><AdminGalleries /></ProtectedRoute>} />
+        <Route path="/admin/blogs" element={<ProtectedRoute requireAdmin><BlogManagement /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>

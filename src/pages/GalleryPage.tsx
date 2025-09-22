@@ -45,14 +45,14 @@ export const GalleryPage = () => {
       {galleries.length === 0 ? (
         <p className="text-muted-foreground">No galleries available yet.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {galleries.map((gallery) => (
             <Link to={`/gallery/${gallery.id}`} key={gallery.id} className="block">
               <Card className="h-full flex flex-col overflow-hidden">
                 {/* Cover image if available */}
                 {gallery.cover_image_url ? (
-                  <div className="h-48 w-full overflow-hidden">
-                    <img src={gallery.cover_image_url} alt={gallery.title} className="w-full h-full object-cover" />
+                  <div className="h-48 w-full bg-muted/20 flex items-center justify-center overflow-hidden">
+                    <img src={gallery.cover_image_url} alt={gallery.title} className="max-h-full max-w-full object-contain" />
                   </div>
                 ) : (
                   <div className="h-48 w-full bg-muted/30 flex items-center justify-center">

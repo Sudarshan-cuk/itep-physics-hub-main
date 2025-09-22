@@ -13,6 +13,7 @@ export const PhotoManagement = ({ galleryId }) => {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [shouldCropSquare, setShouldCropSquare] = useState(false);
   const { toast } = useToast();
 
   const fetchPhotos = async (currentGalleryId) => {
@@ -58,6 +59,39 @@ export const PhotoManagement = ({ galleryId }) => {
     }
 
     setUploading(true);
+
+    // Optionally crop to square using a canvas (center-crop)
+    let fileToUpload: File | Blob = selectedFile;
+    if (shouldCropSquare) {
+      try {
+        setStatusMessage('Processing image (crop to square)...');
+        const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+          image.src = URL.createObjectURL(selectedFile!);
+        });
+
+        const side = Math.min(img.naturalWidth, img.naturalHeight);
+        const sx = Math.floor((img.naturalWidth - side) / 2);
+        const sy = Math.floor((img.naturalHeight - side) / 2);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = side;
+        canvas.height = side;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Canvas not supported');
+        ctx.drawImage(img, sx, sy, side, side, 0, 0, side, side);
+        fileToUpload = await new Promise<Blob>((resolve) => canvas.toBlob((b) => resolve(b as Blob), selectedFile!.type || 'image/jpeg', 0.92));
+        URL.revokeObjectURL(img.src);
+      } catch (err: any) {
+        toast({ title: 'Image processing failed', description: err.message || String(err), variant: 'destructive' });
+        setUploading(false);
+        setStatusMessage(null);
+        return;
+      }
+    }
+
     setStatusMessage('Uploading image to storage...');
 
     const fileExt = selectedFile.name.split('.').pop();
@@ -67,7 +101,7 @@ export const PhotoManagement = ({ galleryId }) => {
 
     const { error: uploadError } = await supabase.storage
       .from('gallery_images')
-      .upload(objectPath, selectedFile);
+      .upload(objectPath, fileToUpload);
 
     if (uploadError) {
       toast({
@@ -104,6 +138,7 @@ export const PhotoManagement = ({ galleryId }) => {
         description: 'Photo uploaded and saved successfully.',
       });
       setSelectedFile(null);
+      setShouldCropSquare(false);
       fetchPhotos(galleryId);
     }
     setUploading(false);
@@ -178,6 +213,12 @@ export const PhotoManagement = ({ galleryId }) => {
                     <XIcon className="h-4 w-4" />
                   </Button>
                 )}
+              </div>
+              <div className="mt-2">
+                <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                  <input type="checkbox" className="accent-primary" checked={shouldCropSquare} onChange={(e) => setShouldCropSquare(e.target.checked)} />
+                  Crop to square before upload
+                </label>
               </div>
               {selectedFile && !uploading && (
                 <p className="text-sm text-muted-foreground mt-2">Selected: {selectedFile.name}</p>

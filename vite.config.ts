@@ -2,6 +2,16 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
+import { dependencies } from "./package.json";
+
+function renderChunks(deps: Record<string, string>) {
+  const chunks: Record<string, string[]> = {};
+  Object.keys(deps).forEach((key) => {
+    if (["react", "react-router-dom", "react-dom"].includes(key)) return;
+    chunks[key] = [key];
+  });
+  return chunks;
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -19,17 +29,10 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 800, // kB
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-router-dom') || id.includes('react-dom')) {
-              return 'vendor-react';
-            }
-            if (id.includes('framer-motion') || id.includes('embla-carousel-react')) {
-              return 'vendor-animations';
-            }
-            return 'vendor';
-          }
-        }
+        manualChunks: {
+          'vendor': ['react', 'react-router-dom', 'react-dom'],
+          ...renderChunks(dependencies),
+        },
       }
     }
   },

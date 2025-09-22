@@ -5,11 +5,14 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
+import { Loader2, Upload as UploadIcon, X as XIcon } from 'lucide-react';
 
 export const PhotoManagement = ({ galleryId }) => {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const { toast } = useToast();
 
   const fetchPhotos = async (currentGalleryId) => {
@@ -39,18 +42,32 @@ export const PhotoManagement = ({ galleryId }) => {
     fetchPhotos(galleryId);
   }, [galleryId]);
 
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  const onFileChange = (event) => {
+    const file = event.target.files?.[0] || null;
+    setSelectedFile(file);
+  };
+
+  const handleUpload = async () => {
+    if (!galleryId) {
+      toast({ title: 'No gallery selected', description: 'Please select a gallery first.', variant: 'destructive' });
+      return;
+    }
+    if (!selectedFile) {
+      toast({ title: 'No file selected', description: 'Choose an image to upload.', variant: 'destructive' });
+      return;
+    }
 
     setUploading(true);
-    const fileExt = file.name.split('.').pop();
+    setStatusMessage('Uploading image to storage...');
+
+    const fileExt = selectedFile.name.split('.').pop();
     const fileName = `${uuidv4()}.${fileExt}`;
-    const filePath = `gallery_images/${galleryId}/${fileName}`;
+    // Path should be relative to the bucket (do not prefix with bucket name)
+    const objectPath = `${galleryId}/${fileName}`;
 
     const { error: uploadError } = await supabase.storage
       .from('gallery_images')
-      .upload(filePath, file);
+      .upload(objectPath, selectedFile);
 
     if (uploadError) {
       toast({
@@ -59,18 +76,21 @@ export const PhotoManagement = ({ galleryId }) => {
         variant: 'destructive',
       });
       setUploading(false);
+      setStatusMessage(null);
       return;
     }
 
+    setStatusMessage('Generating public URL...');
     const { data: publicUrlData } = supabase.storage
       .from('gallery_images')
-      .getPublicUrl(filePath);
+      .getPublicUrl(objectPath);
 
     const imageUrl = publicUrlData.publicUrl;
 
+    setStatusMessage('Saving photo record...');
     const { error: insertError } = await supabase
       .from('photos')
-      .insert({ gallery_id: galleryId, image_url: imageUrl, user_id: (await supabase.auth.getUser()).data.user.id });
+      .insert({ gallery_id: galleryId, image_url: imageUrl });
 
     if (insertError) {
       toast({
@@ -83,18 +103,30 @@ export const PhotoManagement = ({ galleryId }) => {
         title: 'Success',
         description: 'Photo uploaded and saved successfully.',
       });
+      setSelectedFile(null);
       fetchPhotos(galleryId);
     }
     setUploading(false);
+    setStatusMessage(null);
   };
 
   const handleDeletePhoto = async (photoId, imageUrl) => {
     if (window.confirm('Are you sure you want to delete this photo?')) {
-      const filePath = imageUrl.split('gallery_images/')[1];
+      // Derive object path relative to bucket. Public URL usually contains
+      // "/object/public/gallery_images/<objectPath>". Fallback to splitting by bucket id.
+      let objectPath = '';
+      const marker = '/object/public/gallery_images/';
+      const idx = imageUrl.indexOf(marker);
+      if (idx !== -1) {
+        objectPath = imageUrl.substring(idx + marker.length);
+      } else {
+        const parts = imageUrl.split('gallery_images/');
+        objectPath = parts[1] || '';
+      }
 
       const { error: deleteStorageError } = await supabase.storage
         .from('gallery_images')
-        .remove([filePath]);
+        .remove([objectPath]);
 
       if (deleteStorageError) {
         toast({
@@ -135,8 +167,27 @@ export const PhotoManagement = ({ galleryId }) => {
         <div className="mb-4">
           {galleryId ? (
             <>
-              <Input type="file" accept="image/*" onChange={handleFileUpload} disabled={uploading} />
-              {uploading && <p className="text-sm text-gray-500 mt-2">Uploading...</p>}
+              <div className="flex items-center gap-3">
+                <Input type="file" accept="image/*" onChange={onFileChange} disabled={uploading} />
+                <Button onClick={handleUpload} disabled={uploading || !selectedFile} className="flex items-center gap-2">
+                  {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UploadIcon className="h-4 w-4" />}
+                  {uploading ? 'Uploading...' : 'Upload'}
+                </Button>
+                {selectedFile && !uploading && (
+                  <Button variant="ghost" size="icon" onClick={() => setSelectedFile(null)} title="Clear selection">
+                    <XIcon className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+              {selectedFile && !uploading && (
+                <p className="text-sm text-muted-foreground mt-2">Selected: {selectedFile.name}</p>
+              )}
+              {uploading && (
+                <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>{statusMessage || 'Uploading...'}</span>
+                </div>
+              )}
             </>
           ) : (
             <p className="text-sm text-gray-500">Please select a gallery to upload photos.</p>
@@ -148,7 +199,7 @@ export const PhotoManagement = ({ galleryId }) => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {photos.map((photo) => (
               <div key={photo.id} className="relative group">
-                <img src={photo.image_url} alt={photo.description || 'Gallery photo'} className="w-full h-32 object-cover rounded-md" />
+                <img src={photo.image_url} alt={photo.caption || 'Gallery photo'} className="w-full h-32 object-cover rounded-md" />
                 <Button
                   variant="destructive"
                   size="sm"

@@ -79,7 +79,7 @@ export const GalleryDetail = () => {
           {photos.length === 0 ? (
             <p>No photos in this gallery yet.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {photos.map((photo) => (
                 <a
                   key={photo.id}
@@ -88,7 +88,14 @@ export const GalleryDetail = () => {
                   rel="noopener noreferrer"
                   className="relative group block"
                 >
-                  <img src={photo.image_url} alt={photo.caption || 'Gallery photo'} className="w-full h-48 object-cover rounded-md" /> {/* Changed photo.description to photo.caption */}
+                  <div className="w-full bg-muted/20 rounded-md flex items-center justify-center overflow-hidden">
+                    <img
+                      src={photo.image_url}
+                      alt={photo.caption || 'Gallery photo'}
+                      className="max-h-[28rem] w-auto h-auto object-contain"
+                      loading="lazy"
+                    />
+                  </div>
                   {photo.caption && <p className="mt-2 text-sm text-gray-600">{photo.caption}</p>} {/* Changed photo.description to photo.caption */}
                 </a>
               ))}

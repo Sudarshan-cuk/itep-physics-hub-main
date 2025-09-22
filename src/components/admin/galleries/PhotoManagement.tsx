@@ -14,6 +14,8 @@ export const PhotoManagement = ({ galleryId }) => {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [photoName, setPhotoName] = useState('');
+  const [photoDescription, setPhotoDescription] = useState('');
   // Manual crop state
   const [isCropOpen, setIsCropOpen] = useState(false);
   const [cropZoom, setCropZoom] = useState(1);
@@ -55,6 +57,11 @@ export const PhotoManagement = ({ galleryId }) => {
     setSelectedFile(file);
     setCroppedBlob(null);
     setCropPreviewUrl(file ? URL.createObjectURL(file) : null);
+    // Suggest default name from filename (without extension)
+    if (file && !photoName) {
+      const base = file.name.replace(/\.[^.]+$/, '');
+      setPhotoName(base);
+    }
   };
 
   const handleUpload = async () => {
@@ -104,7 +111,7 @@ export const PhotoManagement = ({ galleryId }) => {
     setStatusMessage('Saving photo record...');
     const { error: insertError } = await supabase
       .from('photos')
-      .insert({ gallery_id: galleryId, image_url: imageUrl });
+      .insert({ gallery_id: galleryId, image_url: imageUrl, caption: `${photoName || ''}${photoDescription ? ' — ' + photoDescription : ''}` });
 
     if (insertError) {
       toast({
@@ -121,6 +128,8 @@ export const PhotoManagement = ({ galleryId }) => {
       setCroppedBlob(null);
       if (cropPreviewUrl) URL.revokeObjectURL(cropPreviewUrl);
       setCropPreviewUrl(null);
+      setPhotoName('');
+      setPhotoDescription('');
       fetchPhotos(galleryId);
     }
     setUploading(false);
@@ -197,6 +206,18 @@ export const PhotoManagement = ({ galleryId }) => {
                   </Button>
                 )}
               </div>
+              {selectedFile && (
+                <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-sm text-muted-foreground">Name</label>
+                    <Input value={photoName} onChange={(e) => setPhotoName(e.target.value)} placeholder="Enter photo name" />
+                  </div>
+                  <div>
+                    <label className="text-sm text-muted-foreground">Description</label>
+                    <Input value={photoDescription} onChange={(e) => setPhotoDescription(e.target.value)} placeholder="Enter description (optional)" />
+                  </div>
+                </div>
+              )}
               {selectedFile && (
                 <div className="mt-2">
                   <Button type="button" variant="outline" size="sm" onClick={() => setIsCropOpen(true)}>

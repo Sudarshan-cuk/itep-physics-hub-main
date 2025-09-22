@@ -96,7 +96,7 @@ export const GalleryDetail = () => {
                       loading="lazy"
                     />
                   </div>
-                  {photo.caption && <p className="mt-2 text-sm text-gray-600">{photo.caption}</p>} {/* Changed photo.description to photo.caption */}
+                  {photo.caption && <p className="mt-2 text-sm text-gray-600">{photo.caption}</p>}
                 </a>
               ))}
             </div>

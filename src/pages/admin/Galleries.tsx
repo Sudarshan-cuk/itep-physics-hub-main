@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/components/ui/use-toast';
@@ -79,8 +79,8 @@ export const Galleries = () => {
   return (
     <PageContainer>
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-2xl font-bold">Gallery Management</CardTitle>
+        <div className="flex flex-row items-center justify-between space-y-0 pb-2 p-6">
+          <h2 className="text-2xl font-bold">Gallery Management</h2>
           <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
             <DialogTrigger asChild>
               <Button onClick={handleNewGallery}>Add New Gallery</Button>
@@ -92,7 +92,7 @@ export const Galleries = () => {
               <GalleryForm gallery={selectedGallery} onSuccess={handleFormSuccess} />
             </DialogContent>
           </Dialog>
-        </CardHeader>
+        </div>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
@@ -106,7 +106,8 @@ export const Galleries = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Title</TableHead> {/* Changed Name to Title */}
+                      <TableHead>Cover</TableHead>
+                      <TableHead>Title</TableHead>
                       <TableHead>Description</TableHead>
                       <TableHead>Created At</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -115,7 +116,14 @@ export const Galleries = () => {
                   <TableBody>
                     {galleries.map((gallery) => (
                       <TableRow key={gallery.id} onClick={() => setSelectedGallery(gallery)} className={selectedGallery?.id === gallery.id ? 'bg-muted' : ''}>
-                        <TableCell className="font-medium">{gallery.title}</TableCell> {/* Changed gallery.name to gallery.title */}
+                        <TableCell className="w-24">
+                          {gallery.cover_image_url ? (
+                            <img src={gallery.cover_image_url} alt="Cover" className="h-12 w-12 object-cover rounded" />
+                          ) : (
+                            <div className="h-12 w-12 rounded bg-muted" />
+                          )}
+                        </TableCell>
+                        <TableCell className="font-medium">{gallery.title}</TableCell>
                         <TableCell>{gallery.description}</TableCell>
                         <TableCell>{new Date(gallery.created_at).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right">

@@ -176,6 +176,7 @@ export const PhotoManagement = ({ galleryId }) => {
   };
 
   return (
+    <>
     <Card>
       <CardHeader>
         <CardTitle>Photos in Gallery</CardTitle>
@@ -324,5 +325,6 @@ export const PhotoManagement = ({ galleryId }) => {
         </div>
       </DialogContent>
     </Dialog>
+    </>
   );
 };

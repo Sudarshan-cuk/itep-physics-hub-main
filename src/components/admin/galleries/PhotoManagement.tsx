@@ -6,6 +6,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
 import { Loader2, Upload as UploadIcon, X as XIcon } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export const PhotoManagement = ({ galleryId }) => {
   const [photos, setPhotos] = useState([]);
@@ -13,7 +14,13 @@ export const PhotoManagement = ({ galleryId }) => {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [shouldCropSquare, setShouldCropSquare] = useState(false);
+  // Manual crop state
+  const [isCropOpen, setIsCropOpen] = useState(false);
+  const [cropZoom, setCropZoom] = useState(1);
+  const [cropOffsetX, setCropOffsetX] = useState(0); // -1..1 range
+  const [cropOffsetY, setCropOffsetY] = useState(0); // -1..1 range
+  const [cropPreviewUrl, setCropPreviewUrl] = useState<string | null>(null);
+  const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null);
   const { toast } = useToast();
 
   const fetchPhotos = async (currentGalleryId) => {
@@ -46,6 +53,8 @@ export const PhotoManagement = ({ galleryId }) => {
   const onFileChange = (event) => {
     const file = event.target.files?.[0] || null;
     setSelectedFile(file);
+    setCroppedBlob(null);
+    setCropPreviewUrl(file ? URL.createObjectURL(file) : null);
   };
 
   const handleUpload = async () => {
@@ -60,37 +69,8 @@ export const PhotoManagement = ({ galleryId }) => {
 
     setUploading(true);
 
-    // Optionally crop to square using a canvas (center-crop)
-    let fileToUpload: File | Blob = selectedFile;
-    if (shouldCropSquare) {
-      try {
-        setStatusMessage('Processing image (crop to square)...');
-        const img = await new Promise<HTMLImageElement>((resolve, reject) => {
-          const image = new Image();
-          image.onload = () => resolve(image);
-          image.onerror = reject;
-          image.src = URL.createObjectURL(selectedFile!);
-        });
-
-        const side = Math.min(img.naturalWidth, img.naturalHeight);
-        const sx = Math.floor((img.naturalWidth - side) / 2);
-        const sy = Math.floor((img.naturalHeight - side) / 2);
-
-        const canvas = document.createElement('canvas');
-        canvas.width = side;
-        canvas.height = side;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) throw new Error('Canvas not supported');
-        ctx.drawImage(img, sx, sy, side, side, 0, 0, side, side);
-        fileToUpload = await new Promise<Blob>((resolve) => canvas.toBlob((b) => resolve(b as Blob), selectedFile!.type || 'image/jpeg', 0.92));
-        URL.revokeObjectURL(img.src);
-      } catch (err: any) {
-        toast({ title: 'Image processing failed', description: err.message || String(err), variant: 'destructive' });
-        setUploading(false);
-        setStatusMessage(null);
-        return;
-      }
-    }
+    // Use cropped blob if user applied crop; else original file
+    let fileToUpload: File | Blob = croppedBlob || selectedFile!;
 
     setStatusMessage('Uploading image to storage...');
 
@@ -138,7 +118,9 @@ export const PhotoManagement = ({ galleryId }) => {
         description: 'Photo uploaded and saved successfully.',
       });
       setSelectedFile(null);
-      setShouldCropSquare(false);
+      setCroppedBlob(null);
+      if (cropPreviewUrl) URL.revokeObjectURL(cropPreviewUrl);
+      setCropPreviewUrl(null);
       fetchPhotos(galleryId);
     }
     setUploading(false);
@@ -214,12 +196,13 @@ export const PhotoManagement = ({ galleryId }) => {
                   </Button>
                 )}
               </div>
-              <div className="mt-2">
-                <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                  <input type="checkbox" className="accent-primary" checked={shouldCropSquare} onChange={(e) => setShouldCropSquare(e.target.checked)} />
-                  Crop to square before upload
-                </label>
-              </div>
+              {selectedFile && (
+                <div className="mt-2">
+                  <Button type="button" variant="outline" size="sm" onClick={() => setIsCropOpen(true)}>
+                    Open Crop Tool
+                  </Button>
+                </div>
+              )}
               {selectedFile && !uploading && (
                 <p className="text-sm text-muted-foreground mt-2">Selected: {selectedFile.name}</p>
               )}
@@ -255,5 +238,84 @@ export const PhotoManagement = ({ galleryId }) => {
         )}
       </CardContent>
     </Card>
+
+    {/* Crop Modal */}
+    <Dialog open={isCropOpen} onOpenChange={setIsCropOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Crop Image</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          {cropPreviewUrl ? (
+            <div className="w-full bg-muted/20 rounded flex items-center justify-center overflow-hidden">
+              <img
+                src={cropPreviewUrl}
+                alt="Crop preview"
+                className="max-h-[24rem] w-auto object-contain"
+                style={{ transform: `translate(${cropOffsetX * 10}%, ${cropOffsetY * 10}%) scale(${cropZoom})` }}
+              />
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">Select a file to crop.</p>
+          )}
+
+          <div className="space-y-2">
+            <label className="text-sm text-muted-foreground">Zoom</label>
+            <input type="range" min="1" max="3" step="0.01" value={cropZoom} onChange={(e) => setCropZoom(parseFloat(e.target.value))} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm text-muted-foreground">Horizontal</label>
+              <input type="range" min="-1" max="1" step="0.01" value={cropOffsetX} onChange={(e) => setCropOffsetX(parseFloat(e.target.value))} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm text-muted-foreground">Vertical</label>
+              <input type="range" min="-1" max="1" step="0.01" value={cropOffsetY} onChange={(e) => setCropOffsetY(parseFloat(e.target.value))} />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setIsCropOpen(false)}>Cancel</Button>
+            <Button
+              onClick={async () => {
+                if (!selectedFile) return;
+                // Produce cropped square using zoom and offsets
+                const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+                  const image = new Image();
+                  image.onload = () => resolve(image);
+                  image.onerror = reject;
+                  image.src = URL.createObjectURL(selectedFile);
+                });
+
+                const side = Math.min(img.naturalWidth, img.naturalHeight);
+                const canvas = document.createElement('canvas');
+                canvas.width = side;
+                canvas.height = side;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return;
+
+                // Compute source rect based on zoom and offsets
+                const visibleSide = side / cropZoom;
+                const centerX = img.naturalWidth / 2 + cropOffsetX * (img.naturalWidth - visibleSide) / 2;
+                const centerY = img.naturalHeight / 2 + cropOffsetY * (img.naturalHeight - visibleSide) / 2;
+                const sx = Math.max(0, Math.min(img.naturalWidth - visibleSide, centerX - visibleSide / 2));
+                const sy = Math.max(0, Math.min(img.naturalHeight - visibleSide, centerY - visibleSide / 2));
+
+                ctx.drawImage(img, sx, sy, visibleSide, visibleSide, 0, 0, side, side);
+                const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob((b) => resolve(b), selectedFile.type || 'image/jpeg', 0.92));
+                if (blob) {
+                  setCroppedBlob(blob);
+                  toast({ title: 'Crop applied', description: 'Ready to upload cropped image.' });
+                }
+                URL.revokeObjectURL(img.src);
+                setIsCropOpen(false);
+              }}
+            >
+              Apply Crop
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };

@@ -223,7 +223,14 @@ export const PhotoManagement = ({ galleryId }) => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {photos.map((photo) => (
               <div key={photo.id} className="relative group">
-                <img src={photo.image_url} alt={photo.caption || 'Gallery photo'} className="w-full h-32 object-cover rounded-md" />
+                <div className="w-full h-32 bg-muted/20 rounded-md flex items-center justify-center overflow-hidden">
+                  <img
+                    src={photo.image_url}
+                    alt={photo.caption || 'Gallery photo'}
+                    className="max-h-full max-w-full object-contain"
+                    loading="lazy"
+                  />
+                </div>
                 <Button
                   variant="destructive"
                   size="sm"

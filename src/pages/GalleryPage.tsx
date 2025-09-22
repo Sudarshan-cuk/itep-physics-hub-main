@@ -52,7 +52,7 @@ export const GalleryPage = () => {
                 {/* Cover image if available */}
                 {gallery.cover_image_url ? (
                   <div className="h-48 w-full overflow-hidden">
-                    <img src={gallery.cover_image_url} alt={gallery.name} className="w-full h-full object-cover" />
+                    <img src={gallery.cover_image_url} alt={gallery.title} className="w-full h-full object-cover" />
                   </div>
                 ) : (
                   <div className="h-48 w-full bg-muted/30 flex items-center justify-center">
@@ -60,7 +60,7 @@ export const GalleryPage = () => {
                   </div>
                 )}
                 <CardContent className="p-4">
-                  <h3 className="text-lg font-semibold mb-1">{gallery.name}</h3>
+                  <h3 className="text-lg font-semibold mb-1">{gallery.title}</h3>
                   <p className="text-sm text-gray-600 mb-2">{gallery.description || 'No description available.'}</p>
                   <p className="text-xs text-gray-500">Created: {new Date(gallery.created_at).toLocaleDateString()}</p>
                 </CardContent>

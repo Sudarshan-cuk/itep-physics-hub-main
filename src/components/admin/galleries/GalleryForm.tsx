@@ -10,7 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
 const formSchema = z.object({
-  name: z.string().min(2, { message: 'Gallery name must be at least 2 characters.' }),
+  title: z.string().min(2, { message: 'Gallery title must be at least 2 characters.' }),
   description: z.string().optional(),
 });
 
@@ -19,7 +19,7 @@ export const GalleryForm = ({ gallery, onSuccess }) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: gallery?.name || '',
+      title: gallery?.title || '',
       description: gallery?.description || '',
     },
   });
@@ -27,7 +27,7 @@ export const GalleryForm = ({ gallery, onSuccess }) => {
   useEffect(() => {
     if (gallery) {
       form.reset({
-        name: gallery.name,
+        title: gallery.title,
         description: gallery.description || '',
       });
     }
@@ -75,12 +75,12 @@ export const GalleryForm = ({ gallery, onSuccess }) => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
-          name="name"
+          name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Gallery Name</FormLabel>
+              <FormLabel>Gallery Title</FormLabel>
               <FormControl>
-                <Input placeholder="Enter gallery name" {...field} />
+                <Input placeholder="Enter gallery title" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

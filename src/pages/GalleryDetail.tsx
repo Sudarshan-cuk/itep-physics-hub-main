@@ -79,7 +79,7 @@ export const GalleryDetail = () => {
           {photos.length === 0 ? (
             <p>No photos in this gallery yet.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
               {photos.map((photo) => (
                 <a
                   key={photo.id}

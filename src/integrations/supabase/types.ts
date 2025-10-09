@@ -418,6 +418,33 @@ export type Database = {
           },
         ];
       };
+      site_statistics: {
+        Row: {
+          id: string;
+          label: string;
+          display_value: string;
+          icon_name: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          label: string;
+          display_value: string;
+          icon_name: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          label?: string;
+          display_value?: string;
+          icon_name?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never
@@ -518,6 +545,10 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never;
+
+export type SiteStatistic = Tables<'site_statistics'>;
+export type SiteStatisticInsert = TablesInsert<'site_statistics'>;
+export type SiteStatisticUpdate = TablesUpdate<'site_statistics'>;
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends

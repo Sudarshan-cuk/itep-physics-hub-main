@@ -22,6 +22,7 @@ import MyAccount from "../pages/MyAccount";
 import { FollowUs } from "../pages/FollowUs";
 import WriteBlog from "../pages/WriteBlog";
 import { BlogManagement } from "../pages/admin/BlogManagement";
+import { SiteStatistics } from "../pages/admin/SiteStatistics"; // Import the new admin page
 import { ProtectedRoute } from "./ProtectedRoute";
 
 export const AnimatedRoutes = () => {
@@ -50,6 +51,7 @@ export const AnimatedRoutes = () => {
         <Route path="/admin" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
         <Route path="/admin/galleries" element={<ProtectedRoute requireAdmin><AdminGalleries /></ProtectedRoute>} />
         <Route path="/admin/blogs" element={<ProtectedRoute requireAdmin><BlogManagement /></ProtectedRoute>} />
+        <Route path="/admin/site-statistics" element={<ProtectedRoute requireAdmin><SiteStatistics /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>

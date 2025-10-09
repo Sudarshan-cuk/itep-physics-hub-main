@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
+
+
 export const BatchmateForm = ({ batchmate, onSuccess }) => {
 	const [name, setName] = useState(batchmate ? batchmate.name : '');
 	const [batchYear, setBatchYear] = useState(batchmate ? batchmate.batch_year : '');
-	const { toast } = useToast();
+  const { toast } = useToast();
 
-	useEffect(() => {
-		if (batchmate) {
+  useEffect(() => {
+    if (batchmate) {
 			setName(batchmate.name);
 			setBatchYear(batchmate.batch_year);
 		}
@@ -17,19 +19,19 @@ export const BatchmateForm = ({ batchmate, onSuccess }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (!name || !batchYear) {
-			toast({
+          toast({
 				title: 'Validation Error',
 				description: 'Both name and batch year are required.',
 				variant: 'destructive'
-			});
-			return;
+          });
+          return;
 		}
 
 		let response;
-		if (batchmate) {
-			// Update existing batchmate
+      if (batchmate) {
+        // Update existing batchmate
 			response = await supabase.from('batchmates').update({ name, batch_year: batchYear }).eq('id', batchmate.id);
-		} else {
+      } else {
 			// Automatically add new batchmate when batch year is provided.
 			// You must provide all required fields, e.g. email, and use the correct property names
 			response = await supabase.from('batchmates').insert([{
@@ -46,15 +48,15 @@ export const BatchmateForm = ({ batchmate, onSuccess }) => {
 				variant: 'destructive'
 			});
 		} else {
-			toast({
-				title: 'Success',
+      toast({
+        title: 'Success',
 				description: batchmate ? 'Batchmate updated.' : 'Batchmate created.'
-			});
-			onSuccess();
-		}
-	};
+      });
+      onSuccess();
+    }
+  };
 
-	return (
+  return (
 		<form onSubmit={handleSubmit} className="space-y-4">
 			<div>
 				<label>Name</label>
@@ -65,6 +67,6 @@ export const BatchmateForm = ({ batchmate, onSuccess }) => {
 				<input type="number" value={batchYear} onChange={(e) => setBatchYear(e.target.value)} placeholder="Enter batch year" className="input" />
 			</div>
 			<button type="submit" className="button">{batchmate ? 'Update' : 'Create'}</button>
-		</form>
-	);
+      </form>
+  );
 };

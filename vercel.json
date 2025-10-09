@@ -5,6 +5,10 @@
       "destination": "/index.html"
     },
     {
+      "source": "/functions/v1/(.*)",
+      "destination": "https://swdlyqcaetkmqqduaujf.supabase.co/functions/v1/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

@@ -49,7 +49,8 @@ export function Navbar() {
   if (profile?.role === 'admin') {
     navItems.splice(3, 0,
       { name: 'Dashboard', path: '/admin', public: false },
-      { name: 'Manage Galleries', path: '/admin/galleries', public: false }
+      { name: 'Manage Galleries', path: '/admin/galleries', public: false },
+      { name: 'Site Statistics', path: '/admin/site-statistics', public: false }
     );
   }
 

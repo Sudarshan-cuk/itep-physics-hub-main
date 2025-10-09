@@ -101,7 +101,14 @@ serve(async (req: Request) => {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error: Error | any) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error("Supabase Function Error:", error); // Log the full error object
+    // The "unexpected token <" or "doctype" error often indicates that the client
+    // is receiving an HTML response instead of JSON. This usually happens if:
+    // 1. The Supabase Edge Function failed to deploy or start correctly.
+    // 2. The client is hitting an incorrect URL or a different server.
+    // 3. Environment variables (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) are misconfigured.
+    // Ensure the function is deployed and accessible, and client requests are correct.
+    return new Response(JSON.stringify({ error: error.message, details: error.stack }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

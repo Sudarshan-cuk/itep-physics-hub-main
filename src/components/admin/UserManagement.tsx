@@ -1,70 +1,47 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/use-auth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { toast } from '@/components/ui/use-toast';
+import { Skeleton } from '@/components/ui/skeleton'; // Assuming you have a Skeleton component for loading states
 
-interface User {
-  id: string;
-  email: string;
-}
+// NOTE: Direct client-side calls to `supabase.auth.admin` are a security risk
+// as they require exposing the Supabase service role key, which should only be used on a secure backend.
+// This component has been modified to reflect that user management functionality
+// should be handled via a secure backend API (e.g., a serverless function).
 
 const UserManagement = () => {
   const { isAdmin, loading } = useAuth();
-  const [users, setUsers] = useState<User[]>([]);
-  const [newPassword, setNewPassword] = useState('');
+  const [users, setUsers] = useState<any[]>([]); // Changed to any[] as we won't be fetching directly
+  const [isFetchingUsers, setIsFetchingUsers] = useState(false); // New state for internal fetching
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      if (isAdmin) {
-        const { data: { users }, error } = await supabase.auth.admin.listUsers();
-        if (error) {
-          toast({ title: 'Error fetching users', description: error.message, variant: 'destructive' });
-        } else {
-          setUsers(users as User[]);
-        }
+    // This useEffect is now primarily for demonstrating where a backend call would go.
+    // In a real application, you would call your backend API here.
+    const fetchUsersFromBackend = async () => {
+      if (isAdmin && !loading) {
+        setIsFetchingUsers(true);
+        // Simulate a backend API call
+        // const response = await fetch('/api/admin/users');
+        // const data = await response.json();
+        // setUsers(data);
+        toast({
+          title: 'Backend Integration Required',
+          description: 'User list fetching requires a secure backend API call.',
+          variant: 'destructive',
+        });
+        setIsFetchingUsers(false);
       }
     };
-    fetchUsers();
-  }, [isAdmin]);
 
-  const handleChangePassword = async (userId: string) => {
-    if (!newPassword) {
-      toast({ title: 'Error', description: 'New password cannot be empty.', variant: 'destructive' });
-      return;
-    }
-    const { error } = await supabase.auth.admin.updateUserById(userId, { password: newPassword });
-    if (error) {
-      toast({ title: 'Error changing password', description: error.message, variant: 'destructive' });
-    } else {
-      toast({ title: 'Success', description: 'Password changed successfully.' });
-      setNewPassword('');
-    }
-  };
+    fetchUsersFromBackend();
+  }, [isAdmin, loading]);
 
-  const handleSendMagicLink = async (email: string) => {
-    const { error } = await supabase.auth.signInWithOtp({ email });
-    if (error) {
-      toast({ title: 'Error sending magic link', description: error.message, variant: 'destructive' });
-    } else {
-      toast({ title: 'Success', description: 'Magic link sent successfully.' });
-    }
-  };
-
-  if (loading) {
+  if (loading || isFetchingUsers) {
     return (
-      <div className="text-center py-8">
-        <h2 className="text-2xl font-bold">Loading...</h2>
-        <p className="text-gray-600">Checking your administrative privileges.</p>
+      <div className="space-y-4 p-4">
+        <Skeleton className="h-8 w-64" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
       </div>
     );
   }
@@ -79,9 +56,19 @@ const UserManagement = () => {
   }
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">User Management</h2>
-      <Table>
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">User Management (Backend Integration Required)</h2>
+      <p className="text-gray-700 mb-4">
+        To securely manage users, this functionality requires a backend API endpoint
+        that handles interactions with Supabase's admin functions using a service role key.
+        Direct client-side calls to `supabase.auth.admin` are not secure.
+      </p>
+      <p className="text-gray-700">
+        Please implement a serverless function or a dedicated backend API to fetch,
+        update, and manage user accounts securely.
+      </p>
+      {/* You might still display a table structure as a placeholder or for future integration */}
+      {/* <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Email</TableHead>
@@ -107,7 +94,7 @@ const UserManagement = () => {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
+      </Table> */}
     </div>
   );
 };

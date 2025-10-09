@@ -1,39 +1,125 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { toast } from '@/components/ui/use-toast';
-import { Skeleton } from '@/components/ui/skeleton'; // Assuming you have a Skeleton component for loading states
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
-// NOTE: Direct client-side calls to `supabase.auth.admin` are a security risk
-// as they require exposing the Supabase service role key, which should only be used on a secure backend.
-// This component has been modified to reflect that user management functionality
-// should be handled via a secure backend API (e.g., a serverless function).
+interface User {
+  id: string;
+  email: string;
+  // Add other user properties you might need
+}
 
 const UserManagement = () => {
-  const { isAdmin, loading } = useAuth();
-  const [users, setUsers] = useState<any[]>([]); // Changed to any[] as we won't be fetching directly
-  const [isFetchingUsers, setIsFetchingUsers] = useState(false); // New state for internal fetching
+  const { session, isAdmin, loading } = useAuth();
+  const [users, setUsers] = useState<User[]>([]);
+  const [isFetchingUsers, setIsFetchingUsers] = useState(false);
+  const [newPassword, setNewPassword] = useState<{ [key: string]: string }>({});
+
+  const fetchUsers = async () => {
+    if (!session || !isAdmin) return;
+
+    setIsFetchingUsers(true);
+    try {
+      const response = await fetch('/functions/v1/user-management/users', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Error fetching users: ${response.statusText}`);
+      }
+      const data = await response.json();
+      setUsers(data.users);
+    } catch (error: any) {
+      toast({
+        title: 'Error fetching users',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsFetchingUsers(false);
+    }
+  };
+
+  const handleChangePassword = async (userId: string) => {
+    if (!session || !isAdmin || !newPassword[userId]) return;
+
+    try {
+      const response = await fetch('/functions/v1/user-management/users', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ userId, updates: { password: newPassword[userId] } }),
+      });
+      if (!response.ok) {
+        throw new Error(`Error changing password: ${response.statusText}`);
+      }
+      toast({
+        title: 'Password changed',
+        description: `Password for user ${userId} has been updated.`,
+      });
+      setNewPassword((prev) => {
+        const newState = { ...prev };
+        delete newState[userId];
+        return newState;
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error changing password',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleDeleteUser = async (userId: string) => {
+    if (!session || !isAdmin) return;
+
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/functions/v1/user-management/users', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ userId }),
+      });
+      if (!response.ok) {
+        throw new Error(`Error deleting user: ${response.statusText}`);
+      }
+      toast({
+        title: 'User deleted',
+        description: `User ${userId} has been deleted.`,
+      });
+      fetchUsers(); // Refresh the user list
+    } catch (error: any) {
+      toast({
+        title: 'Error deleting user',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
 
   useEffect(() => {
-    // This useEffect is now primarily for demonstrating where a backend call would go.
-    // In a real application, you would call your backend API here.
-    const fetchUsersFromBackend = async () => {
-      if (isAdmin && !loading) {
-        setIsFetchingUsers(true);
-        // Simulate a backend API call
-        // const response = await fetch('/api/admin/users');
-        // const data = await response.json();
-        // setUsers(data);
-        toast({
-          title: 'Backend Integration Required',
-          description: 'User list fetching requires a secure backend API call.',
-          variant: 'destructive',
-        });
-        setIsFetchingUsers(false);
-      }
-    };
-
-    fetchUsersFromBackend();
-  }, [isAdmin, loading]);
+    fetchUsers();
+  }, [isAdmin, loading, session]);
 
   if (loading || isFetchingUsers) {
     return (
@@ -57,18 +143,8 @@ const UserManagement = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">User Management (Backend Integration Required)</h2>
-      <p className="text-gray-700 mb-4">
-        To securely manage users, this functionality requires a backend API endpoint
-        that handles interactions with Supabase's admin functions using a service role key.
-        Direct client-side calls to `supabase.auth.admin` are not secure.
-      </p>
-      <p className="text-gray-700">
-        Please implement a serverless function or a dedicated backend API to fetch,
-        update, and manage user accounts securely.
-      </p>
-      {/* You might still display a table structure as a placeholder or for future integration */}
-      {/* <Table>
+      <h2 className="text-2xl font-bold mb-4">User Management</h2>
+      <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Email</TableHead>
@@ -84,17 +160,22 @@ const UserManagement = () => {
                   <Input
                     type="password"
                     placeholder="New Password"
-                    onChange={(e) => setNewPassword(e.target.value)}
+                    value={newPassword[user.id] || ''}
+                    onChange={(e) =>
+                      setNewPassword((prev) => ({ ...prev, [user.id]: e.target.value }))
+                    }
                     className="max-w-xs"
                   />
                   <Button onClick={() => handleChangePassword(user.id)}>Change Password</Button>
-                  <Button onClick={() => handleSendMagicLink(user.email)}>Send Magic Link</Button>
+                  <Button variant="destructive" onClick={() => handleDeleteUser(user.id)}>
+                    Delete User
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
-      </Table> */}
+      </Table>
     </div>
   );
 };

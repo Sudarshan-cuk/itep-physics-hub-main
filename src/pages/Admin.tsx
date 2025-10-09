@@ -32,6 +32,7 @@ import { BlogManagement } from './admin/BlogManagement';
 import { Galleries } from './admin/Galleries';
 import { SocialAccounts } from './admin/SocialAccounts';
 import { Batchmates } from './admin/Batchmates';
+import UserManagement from '@/components/admin/UserManagement';
 
 interface ContactMessage {
   id: string;
@@ -242,7 +243,7 @@ function AdminContent() {
         transition={{ delay: 0.4, duration: 0.5 }}
       >
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-8">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9">
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Users
@@ -274,6 +275,10 @@ function AdminContent() {
             <TabsTrigger value="batchmates" className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4" />
               Batchmates
+            </TabsTrigger>
+            <TabsTrigger value="user-management" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              User Management
             </TabsTrigger>
           </TabsList>
 
@@ -368,6 +373,10 @@ function AdminContent() {
 
           <TabsContent value="batchmates">
             <Batchmates />
+          </TabsContent>
+
+          <TabsContent value="user-management">
+            <UserManagement />
           </TabsContent>
         </Tabs>
       </motion.div>

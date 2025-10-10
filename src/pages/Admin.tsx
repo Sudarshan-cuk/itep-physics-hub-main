@@ -33,6 +33,7 @@ import { Galleries } from './admin/Galleries';
 import { SocialAccounts } from './admin/SocialAccounts';
 import { Batchmates } from './admin/Batchmates';
 import UserManagement from '@/components/admin/UserManagement';
+import { SiteStatistics } from './admin/SiteStatistics';
 
 interface ContactMessage {
   id: string;
@@ -243,7 +244,7 @@ function AdminContent() {
         transition={{ delay: 0.4, duration: 0.5 }}
       >
         <Tabs defaultValue="user-management" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-8">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9">
             <TabsTrigger value="messages" className="flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
               Messages
@@ -267,6 +268,10 @@ function AdminContent() {
             <TabsTrigger value="social" className="flex items-center gap-2">
               <Share2 className="h-4 w-4" />
               Social
+            </TabsTrigger>
+            <TabsTrigger value="site-statistics" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Site Statistics
             </TabsTrigger>
             <TabsTrigger value="batchmates" className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4" />
@@ -362,6 +367,10 @@ function AdminContent() {
 
           <TabsContent value="social">
             <SocialAccounts />
+          </TabsContent>
+
+          <TabsContent value="site-statistics">
+            <SiteStatistics />
           </TabsContent>
 
           <TabsContent value="batchmates">

@@ -1,14 +1,34 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, Users, Award, Beaker, GraduationCap, Globe, Target, Heart, Star, Building } from 'lucide-react';
+import { BookOpen, Users, Award, Beaker, GraduationCap, Globe, Target, Heart, Star, Building, Loader2, icons } from 'lucide-react';
 import { PageContainer } from '@/components/PageContainer';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+
+interface SiteStatistic {
+  id: string;
+  label: string;
+  display_value: string;
+  icon_name: string;
+}
 
 export default function About() {
-  const programStats = [
-    { icon: <Users className="h-6 w-6" />, label: "Trained Teachers", value: "1500+" },
-    { icon: <GraduationCap className="h-6 w-6" />, label: "Partner Schools", value: "200+" },
-    { icon: <Award className="h-6 w-6" />, label: "Teaching Placements", value: "100%" },
-    { icon: <Globe className="h-6 w-6" />, label: "Years of Excellence", value: "25+" }
-  ];
+  const { data: siteStatistics, isLoading, error } = useQuery<SiteStatistic[]>({
+    queryKey: ['siteStatistics'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('site_statistics').select('*');
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const programStats = siteStatistics?.map(stat => {
+    const IconComponent = icons[stat.icon_name as keyof typeof icons];
+    return {
+      icon: IconComponent ? <IconComponent className="h-6 w-6" /> : null,
+      label: stat.label,
+      value: stat.display_value,
+    };
+  }) || [];
 
   const programFeatures = [
     {
@@ -41,6 +61,27 @@ export default function About() {
       description: "Embracing modern teaching technologies and research-based instructional methods."
     }
   ];
+
+  if (isLoading) {
+    return (
+      <PageContainer>
+        <div className="text-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+          <p className="mt-4 text-muted-foreground">Loading program impact data...</p>
+        </div>
+      </PageContainer>
+    );
+  }
+
+  if (error) {
+    return (
+      <PageContainer>
+        <div className="text-center py-12 text-red-500">
+          <p>Error loading program impact data: {error.message}</p>
+        </div>
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer>

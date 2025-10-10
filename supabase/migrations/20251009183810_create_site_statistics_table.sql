@@ -13,4 +13,4 @@ CREATE POLICY "Allow public read access" ON public.site_statistics
 FOR SELECT USING (true);
 
 CREATE POLICY "Allow admin to manage site statistics" ON public.site_statistics
-FOR ALL TO authenticated USING (auth.uid() IN (SELECT user_id FROM public.user_roles WHERE role = 'admin')) WITH CHECK (auth.uid() IN (SELECT user_id FROM public.user_roles WHERE role = 'admin'));
+FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());

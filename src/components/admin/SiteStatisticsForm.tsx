@@ -7,7 +7,11 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import { toast } from '../ui/use-toast';
-import { SiteStatistic, SiteStatisticInsert, SiteStatisticUpdate } from '../../integrations/supabase/types';
+import { Tables, TablesInsert, TablesUpdate } from '../../integrations/supabase/types';
+
+type SiteStatistic = Tables<'site_statistics'>;
+type SiteStatisticInsert = TablesInsert<'site_statistics'>;
+type SiteStatisticUpdate = TablesUpdate<'site_statistics'>;
 import { icons, LucideProps } from 'lucide-react'; // Import specific icons object and LucideProps
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import React from 'react';

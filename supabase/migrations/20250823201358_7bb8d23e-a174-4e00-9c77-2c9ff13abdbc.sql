@@ -34,9 +34,9 @@ ON public.profiles
 FOR INSERT 
 WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Admins can view all profiles" 
-ON public.profiles 
-FOR ALL 
+CREATE POLICY "Admins can view all profiles"
+ON public.profiles
+FOR ALL
 USING (public.is_admin());
 
 -- Function to update timestamps

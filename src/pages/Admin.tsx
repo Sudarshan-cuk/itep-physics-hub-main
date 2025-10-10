@@ -242,12 +242,8 @@ function AdminContent() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.5 }}
       >
-        <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9">
-            <TabsTrigger value="users" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Users
-            </TabsTrigger>
+        <Tabs defaultValue="user-management" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-8">
             <TabsTrigger value="messages" className="flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
               Messages
@@ -282,9 +278,6 @@ function AdminContent() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="users">
-            <UserApprovalManagement />
-          </TabsContent>
 
           <TabsContent value="messages">
             <Card>
@@ -376,7 +369,7 @@ function AdminContent() {
           </TabsContent>
 
           <TabsContent value="user-management">
-            <UserManagement />
+            <UserApprovalManagement />
           </TabsContent>
         </Tabs>
       </motion.div>

@@ -37,12 +37,7 @@ WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Admins can view all profiles" 
 ON public.profiles 
 FOR ALL 
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE user_id = auth.uid() AND role = 'admin'
-  )
-);
+USING (public.is_admin());
 
 -- Function to update timestamps
 CREATE OR REPLACE FUNCTION public.update_updated_at_column()

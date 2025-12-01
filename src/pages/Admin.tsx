@@ -23,7 +23,9 @@ import {
   UploadCloud,
   Newspaper,
   Share2,
-  GraduationCap
+  GraduationCap,
+  BookOpen,
+  ClipboardList
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
@@ -34,6 +36,8 @@ import { SocialAccounts } from './admin/SocialAccounts';
 import { Batchmates } from './admin/Batchmates';
 import UserManagement from '@/components/admin/UserManagement';
 import { SiteStatistics } from './admin/SiteStatistics';
+import ResearchPapersManagement from './admin/ResearchPapersManagement';
+import AssignmentsManagement from './admin/AssignmentsManagement';
 
 interface ContactMessage {
   id: string;
@@ -244,7 +248,7 @@ function AdminContent() {
         transition={{ delay: 0.4, duration: 0.5 }}
       >
         <Tabs defaultValue="user-management" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-11">
             <TabsTrigger value="messages" className="flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
               Messages
@@ -276,6 +280,14 @@ function AdminContent() {
             <TabsTrigger value="batchmates" className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4" />
               Batchmates
+            </TabsTrigger>
+            <TabsTrigger value="research-papers" className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4" />
+              Research Papers
+            </TabsTrigger>
+            <TabsTrigger value="assignments" className="flex items-center gap-2">
+              <ClipboardList className="h-4 w-4" />
+              Assignments
             </TabsTrigger>
             <TabsTrigger value="user-management" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
@@ -375,6 +387,14 @@ function AdminContent() {
 
           <TabsContent value="batchmates">
             <Batchmates />
+          </TabsContent>
+
+          <TabsContent value="research-papers">
+            <ResearchPapersManagement />
+          </TabsContent>
+
+          <TabsContent value="assignments">
+            <AssignmentsManagement />
           </TabsContent>
 
           <TabsContent value="user-management">

@@ -76,10 +76,17 @@ serve(async (req: Request) => {
           headers: { "Content-Type": "application/json" },
         });
       }
-      return new Response(JSON.stringify(data), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
+      if (data?.user) {
+        return new Response(JSON.stringify(data.user), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      } else {
+        return new Response(JSON.stringify({ message: "User updated successfully" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     } else if (path === "/user-management/users" && method === "DELETE") {
       const body = await req.json() as UserManagementPayload;
       const { userId } = body;

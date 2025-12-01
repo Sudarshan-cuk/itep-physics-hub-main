@@ -3,20 +3,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Download } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { PageContainer } from '@/components/PageContainer';
+import { format } from 'date-fns';
 
-interface StudyMaterial {
+interface Assignment {
   id: string;
+  created_at: string;
   title: string;
   description: string | null;
-  file_url: string;
-  file_name: string;
-  category: string;
+  due_date: string | null;
+  updated_at: string;
 }
 
 export function Assignments() {
-  const [assignments, setAssignments] = useState<StudyMaterial[]>([]);
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -24,10 +25,9 @@ export function Assignments() {
     const fetchAssignments = async () => {
       setLoading(true);
       const { data, error } = await supabase
-        .from('study_materials')
-        .select('*')
-        .eq('category', 'Assignments') // Filter by 'Assignments' category
-        .order('created_at', { ascending: false });
+        .from('assignments')
+        .select('id, created_at, title, description, due_date, updated_at')
+        .order('due_date', { ascending: true });
 
       if (error) {
         toast({
@@ -64,13 +64,12 @@ export function Assignments() {
                   {assignment.description && (
                     <p className="text-sm text-muted-foreground mt-2">{assignment.description}</p>
                   )}
+                  {assignment.due_date && (
+                    <p className="text-sm text-muted-foreground mt-2">Due: {format(new Date(assignment.due_date), "PPP")}</p>
+                  )}
                 </CardHeader>
                 <CardContent className="flex-grow flex items-end">
-                  <Button asChild>
-                    <a href={assignment.file_url} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                      <Download className="h-4 w-4 mr-2" /> Download {assignment.file_name}
-                    </a>
-                  </Button>
+                  {/* Download functionality removed as 'file_url' is not part of the assignment schema. */}
                 </CardContent>
               </Card>
             ))

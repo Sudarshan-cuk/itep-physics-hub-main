@@ -19,7 +19,7 @@ DROP POLICY IF EXISTS "Authenticated users can view public galleries" ON public.
 -- Policy for admins to manage galleries
 CREATE POLICY "Admins can manage galleries"
 ON public.galleries
-FOR ALL
+FOR SELECT, INSERT, UPDATE, DELETE
 TO authenticated
 USING (public.is_admin())
 WITH CHECK (public.is_admin());
@@ -29,7 +29,7 @@ CREATE POLICY "Authenticated users can view public galleries"
 ON public.galleries
 FOR SELECT
 TO authenticated
-USING (is_public = true);
+USING (is_public = true AND NOT public.is_admin());
 
 
 -- Create the 'photos' table
@@ -114,7 +114,7 @@ DROP POLICY IF EXISTS "Authenticated users can view batchmates" ON public.batchm
 -- Policy for admins to manage batchmates
 CREATE POLICY "Admins can manage batchmates"
 ON public.batchmates
-FOR ALL
+FOR INSERT, UPDATE, DELETE
 TO authenticated
 USING (public.is_admin())
 WITH CHECK (public.is_admin());

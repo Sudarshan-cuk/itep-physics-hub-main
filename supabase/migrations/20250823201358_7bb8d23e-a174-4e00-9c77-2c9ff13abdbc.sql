@@ -22,17 +22,17 @@ ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view their own profile" 
 ON public.profiles 
 FOR SELECT 
-USING (auth.uid() = user_id);
+USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can update their own profile" 
 ON public.profiles 
 FOR UPDATE 
-USING (auth.uid() = user_id);
+USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Users can insert their own profile" 
 ON public.profiles 
 FOR INSERT 
-WITH CHECK (auth.uid() = user_id);
+WITH CHECK ((select auth.uid()) = user_id);
 
 CREATE POLICY "Admins can view all profiles"
 ON public.profiles

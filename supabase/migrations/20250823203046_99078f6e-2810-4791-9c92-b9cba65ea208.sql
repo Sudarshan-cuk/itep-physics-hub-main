@@ -52,38 +52,44 @@ ALTER TABLE public.photos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for notes table
-CREATE POLICY "Users can view their own notes" 
-ON public.notes 
-FOR SELECT 
-USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "notes_owner_delete" ON public.notes;
+DROP POLICY IF EXISTS "notes_owner_insert" ON public.notes;
+DROP POLICY IF EXISTS "notes_owner_select" ON public.notes;
+DROP POLICY IF EXISTS "notes_owner_update" ON public.notes;
+DROP POLICY IF EXISTS "Users can view their own notes" ON public.notes;
 
-CREATE POLICY "Users can create their own notes" 
-ON public.notes 
-FOR INSERT 
-WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can create their own notes"
+ON public.notes
+FOR INSERT
+WITH CHECK ((select auth.uid()) = user_id);
 
-CREATE POLICY "Users can update their own notes" 
-ON public.notes 
-FOR UPDATE 
-USING (auth.uid() = user_id);
+CREATE POLICY "Users can update their own notes"
+ON public.notes
+FOR UPDATE
+USING ((select auth.uid()) = user_id);
 
-CREATE POLICY "Users can delete their own notes" 
-ON public.notes 
-FOR DELETE 
-USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete their own notes"
+ON public.notes
+FOR DELETE
+USING ((select auth.uid()) = user_id);
 
 -- RLS Policies for blog posts (read for all, write for admins)
-CREATE POLICY "Anyone can view published blog posts" 
-ON public.blog_posts 
-FOR SELECT 
-USING (published = true OR auth.uid() IS NOT NULL);
+DROP POLICY IF EXISTS "posts_owner_delete" ON public.blog_posts;
+DROP POLICY IF EXISTS "posts_owner_insert" ON public.blog_posts;
+DROP POLICY IF EXISTS "posts_owner_select" ON public.blog_posts;
+DROP POLICY IF EXISTS "posts_owner_update" ON public.blog_posts;
 
-CREATE POLICY "Admins can manage blog posts" 
-ON public.blog_posts 
-FOR ALL 
+CREATE POLICY "Anyone can view published blog posts"
+ON public.blog_posts
+FOR SELECT
+USING (published = true AND NOT public.is_admin());
+
+CREATE POLICY "Admins can manage blog posts"
+ON public.blog_posts
+FOR SELECT, INSERT, UPDATE, DELETE
 USING (EXISTS (
-  SELECT 1 FROM public.profiles 
-  WHERE user_id = auth.uid() AND role = 'admin'
+  SELECT 1 FROM public.profiles
+  WHERE user_id = (select auth.uid()) AND role = 'admin'
 ));
 
 -- RLS Policies for photos (read for all, upload for approved users)
@@ -97,45 +103,50 @@ ON public.photos
 FOR INSERT 
 WITH CHECK (EXISTS (
   SELECT 1 FROM public.profiles 
-  WHERE user_id = auth.uid() AND is_approved = true
+  WHERE user_id = (select auth.uid()) AND is_approved = true
 ));
 
 CREATE POLICY "Users can update their own photos" 
 ON public.photos 
 FOR UPDATE 
-USING (auth.uid() = uploaded_by);
+USING ((select auth.uid()) = uploaded_by);
 
 CREATE POLICY "Users can delete their own photos or admins can delete any" 
 ON public.photos 
 FOR DELETE 
 USING (
-  auth.uid() = uploaded_by OR 
+  (select auth.uid()) = uploaded_by OR
   EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE user_id = auth.uid() AND role = 'admin'
+    SELECT 1 FROM public.profiles
+    WHERE user_id = (select auth.uid()) AND role = 'admin'
   )
 );
 
 -- RLS Policies for contact messages (insert for all, read for admins)
-CREATE POLICY "Anyone can submit contact messages" 
-ON public.contact_messages 
-FOR INSERT 
+DROP POLICY IF EXISTS "messages_admin_delete" ON public.contact_messages;
+DROP POLICY IF EXISTS "messages_admin_insert" ON public.contact_messages;
+DROP POLICY IF EXISTS "messages_admin_select" ON public.contact_messages;
+DROP POLICY IF EXISTS "messages_admin_update" ON public.contact_messages;
+
+CREATE POLICY "Anyone can submit contact messages"
+ON public.contact_messages
+FOR INSERT
 WITH CHECK (true);
 
-CREATE POLICY "Admins can view all contact messages" 
-ON public.contact_messages 
-FOR SELECT 
+CREATE POLICY "Admins can view all contact messages"
+ON public.contact_messages
+FOR SELECT
 USING (EXISTS (
-  SELECT 1 FROM public.profiles 
-  WHERE user_id = auth.uid() AND role = 'admin'
+  SELECT 1 FROM public.profiles
+  WHERE user_id = (select auth.uid()) AND role = 'admin'
 ));
 
-CREATE POLICY "Admins can update contact messages" 
-ON public.contact_messages 
-FOR UPDATE 
+CREATE POLICY "Admins can update contact messages"
+ON public.contact_messages
+FOR UPDATE
 USING (EXISTS (
-  SELECT 1 FROM public.profiles 
-  WHERE user_id = auth.uid() AND role = 'admin'
+  SELECT 1 FROM public.profiles
+  WHERE user_id = (select auth.uid()) AND role = 'admin'
 ));
 
 -- Create triggers for automatic timestamp updates

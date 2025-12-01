@@ -32,29 +32,29 @@ ALTER TABLE public.faculty_members ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Anyone can view contact info" 
 ON public.contact_info 
 FOR SELECT 
-USING (true);
+USING (NOT public.is_admin());
 
 CREATE POLICY "Admins can manage contact info" 
 ON public.contact_info 
-FOR ALL 
+FOR SELECT, INSERT, UPDATE, DELETE
 USING (EXISTS (
-  SELECT 1 FROM profiles 
-  WHERE profiles.user_id = auth.uid() 
+  SELECT 1 FROM profiles
+  WHERE profiles.user_id = (select auth.uid())
   AND profiles.role = 'admin'
 ));
 
 -- RLS Policies for faculty_members
 CREATE POLICY "Anyone can view faculty members" 
-ON public.faculty_members 
-FOR SELECT 
-USING (true);
+ON public.faculty_members
+FOR SELECT
+USING (NOT public.is_admin());
 
 CREATE POLICY "Admins can manage faculty members" 
 ON public.faculty_members 
-FOR ALL 
+FOR SELECT, INSERT, UPDATE, DELETE
 USING (EXISTS (
-  SELECT 1 FROM profiles 
-  WHERE profiles.user_id = auth.uid() 
+  SELECT 1 FROM profiles
+  WHERE profiles.user_id = (select auth.uid())
   AND profiles.role = 'admin'
 ));
 

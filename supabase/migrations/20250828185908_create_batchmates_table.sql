@@ -17,7 +17,7 @@ ALTER TABLE public.batchmates ENABLE ROW LEVEL SECURITY;
 -- Policy for admins to manage batchmates
 CREATE POLICY "Admins can manage batchmates"
 ON public.batchmates
-FOR ALL
+FOR INSERT, UPDATE, DELETE
 TO authenticated
 USING (public.is_admin())
 WITH CHECK (public.is_admin());
